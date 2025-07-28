@@ -5,6 +5,7 @@ import com.medicalsuppliesmanagement.entity.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CustomerService {
@@ -14,4 +15,6 @@ public interface CustomerService {
     void deleteById(Long id);
     Customer update(Customer customer);
     Optional<Customer> findByCustomerCode(String code);
+
+    void deleteByIds(List<Long> ids);
 } 

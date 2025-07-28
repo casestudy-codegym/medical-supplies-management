@@ -1,21 +1,22 @@
 package com.medicalsuppliesmanagement.service;
 
 import com.medicalsuppliesmanagement.entity.Customer;
-import com.medicalsuppliesmanagement.repository.CustomerRepository;
+import com.medicalsuppliesmanagement.repository.ICustomerRepository;
 import com.medicalsuppliesmanagement.service.impl.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
 @Service
-public class CustomerServiceImpl implements CustomerService {
+public class ICustomerService implements CustomerService {
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private ICustomerRepository customerRepository;
 
     @Override
     public Customer save(Customer customer) {
@@ -59,4 +60,11 @@ public class CustomerServiceImpl implements CustomerService {
     public Optional<Customer> findByCustomerCode(String code) {
         return customerRepository.findByCustomerCode(code);
     }
-} 
+
+    @Override
+    public void deleteByIds(List<Long> ids) {
+        for (Long id : ids) {
+            customerRepository.deleteById(id);
+        }
+    }
+}
