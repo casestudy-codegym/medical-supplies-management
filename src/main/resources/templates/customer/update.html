@@ -27,11 +27,10 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg mb-4">
-    <div class="container-fluid">
-        <a class="navbar-brand" th:text="${action}">Chỉnh sửa khách hàng</a>
-    </div>
-</nav>
+<div th:replace="~{layout/header :: header}"></div>
+<div class="container-fluid text-center my-4">
+        <h2 class="fw-bold" style="color: #293A58;">CHỈNH SỬA KHÁCH HÀNG</h2>
+</div>
 
 <div class="container">
     <div class="card p-4">
