@@ -11,62 +11,60 @@
             margin: 0;
             padding: 0;
         }
-
-        /* Main content styles */
-        .main-content {
-            margin-top: 20px;
-        }
-
-        h2 {
-            color: #293A58;
-            font-weight: bold;
-        }
-
-        .table thead {
-            background-color: #293A58;
-            color: white;
-        }
-
-        .table td, .table th {
-            vertical-align: middle;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: #e2e6ea;
-        }
-
+        .main-content { margin-top: 20px; }
+        h2 { color: #293A58; font-weight: bold; }
+        .table thead { background-color: #293A58; color: white; }
+        .table td, .table th { vertical-align: middle; }
+        .table-hover tbody tr:hover { background-color: #e2e6ea; }
         .container {
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
-
-        /* Responsive adjustments for content under header */
         @media (max-width: 768px) {
-            .main-content {
-                margin-top: 10px;
-            }
-
-            .container {
-                margin: 10px;
-                padding: 15px;
-            }
-
-            .table-responsive {
-                font-size: 0.9rem;
-            }
+            .main-content { margin-top: 10px; }
+            .container { margin: 10px; padding: 15px; }
+            .table-responsive { font-size: 0.9rem; }
+        }
+        .pagination .page-link {
+            color: #fff;
+            background-color: #293A58;
+            border: 1px solid #293A58;
+        }
+        .pagination .page-link:hover {
+            background-color: #1e2c45;
+            color: #fff;
+        }
+        .pagination .active .page-link {
+            background-color: #1e2c45;
+            border-color: #1e2c45;
+            color: #fff;
+        }
+        .pagination .disabled .page-link {
+            background-color: #e9ecef;
+            color: #6c757d;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-<!-- Include header fragment -->
+
 <div th:insert="~{layout/header :: header}"></div>
 
-<!-- Main content -->
 <div class="main-content">
     <div class="container mt-4">
         <h2 class="mb-4">Danh sách nhân viên</h2>
+
+        <!-- Tìm kiếm -->
+        <div class="d-flex justify-content-between mb-3">
+            <form class="d-flex" method="get" th:action="@{/employees}">
+                <input type="text" name="keyword" class="form-control me-2" th:value="${keyword}"
+                       placeholder="Tìm theo tên nhân viên..." style="width: 300px;">
+                <button class="btn btn-primary" type="submit">Tìm</button>
+            </form>
+            <a th:href="@{/employees/create}" class="btn btn-success">+ Thêm nhân viên</a>
+        </div>
 
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
@@ -81,11 +79,12 @@
                     <th>Điện thoại</th>
                     <th>Email</th>
                     <th>Chức vụ</th>
+                    <th>Hành động</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="e, iterStat : ${employeeList}">
-                    <td th:text="${iterStat.count}"></td>
+                <tr th:each="e, iterStat : ${employeePage.content}">
+                    <td th:text="${iterStat.index + 1}"></td>
                     <td th:text="${e.employeeCode}"></td>
                     <td th:text="${e.userAccount.fullName}"></td>
                     <td th:text="${#temporals.format(e.userAccount.dateOfBirth, 'dd/MM/yyyy')}"></td>
@@ -94,10 +93,38 @@
                     <td th:text="${e.userAccount.phone}"></td>
                     <td th:text="${e.userAccount.email}"></td>
                     <td th:text="${e.position}"></td>
+                    <td>
+                        <a th:href="@{'/employees/edit/' + ${e.employeeId}}" class="btn btn-sm btn-warning">Sửa</a>
+                        <a th:href="@{'/employees/delete/' + ${e.employeeId}}"
+                           onclick="return confirm('Bạn có chắc chắn muốn xóa?')"
+                           class="btn btn-sm btn-danger">Xóa</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(employeePage.content)}">
+                    <td colspan="10" class="text-center">Không có nhân viên nào</td>
                 </tr>
                 </tbody>
             </table>
         </div>
+
+        <!-- Phân trang -->
+        <nav th:if="${employeePage.totalPages > 1}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${employeePage.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/employees(page=${employeePage.number - 1}, keyword=${keyword})}">«</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, employeePage.totalPages - 1)}"
+                    th:classappend="${i == employeePage.number} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/employees(page=${i}, keyword=${keyword})}"
+                       th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${employeePage.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/employees(page=${employeePage.number + 1}, keyword=${keyword})}">»</a>
+                </li>
+            </ul>
+        </nav>
+
     </div>
 </div>
 </body>
