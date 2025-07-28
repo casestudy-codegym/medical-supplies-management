@@ -1,10 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
 </head>
 <body>
+<footer th:fragment="footer" class="footer">
+    <style>
+        .footer {
+            background-color: #2A4259;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
+        .footer h6 {
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer .bottom-bar {
+            background-color: #1f2e45;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+
+        .footer .social-icons i {
+            color: white;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        .footer .social-icons i:hover {
+            color: #ccc;
+        }
+
+        /* Add some visual separation between columns */
+        .footer .col-md-4 {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .footer .col-md-4:not(:last-child) {
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .footer .col-md-4:not(:last-child) {
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                padding-bottom: 20px;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+    <div class="container py-5">
+        <div class="row">
+
+            <!-- Cột 1: Giới thiệu -->
+            <div class="col-md-4 mb-4">
+                <h6 class="fw-bold text-uppercase">CTY TNHH TBYT – DƯỢC TRƯỜNG THỊNH PHÁT</h6>
+                <p>
+                    Chúng tôi tin tưởng rằng, với năng lực, sự năng động, sáng tạo, trách nhiệm cao của đội ngũ cán bộ ở đây,
+                    Công ty sẽ luôn đáp ứng được các hợp đồng thương mại trong nước và xuất khẩu ra thị trường thế giới,
+                    đáp ứng các hợp đồng dịch vụ kỹ thuật y tế đối với khách hàng
+                    <em>(cơ sở y tế công lập và tư nhân, trong nước và nước ngoài)</em>.
+                </p>
+            </div>
+
+            <!-- Cột 2: Liên hệ -->
+            <div class="col-md-4 mb-4">
+                <h6 class="fw-bold text-uppercase">Liên hệ</h6>
+                <p><strong>Trụ sở:</strong> Tầng 3, Tòa nhà Đức An, Số 01, Đường Trần Hưng Học, P. Lê Mao, TP. Vinh, Nghệ An, Việt Nam.</p>
+                <p><strong>Chi nhánh 1:</strong> Số 5, Tân Phú – Đại Lộ Lê Nin – TP. Vinh – Nghệ An</p>
+                <p><strong>Chi nhánh 2:</strong> 402 CT2 Vimeco Nguyễn Chánh, Trung Hoà, Cầu Giấy, Hà Nội</p>
+                <p><strong>Chi nhánh 3:</strong> 618A Trần Đại Nghĩa, P. Tân Tạo A, Q. Bình Tân, TP. HCM</p>
+                <p><strong>Hotline:</strong> 0913379559</p>
+                <p><strong>Điện thoại:</strong> 023.88.98.58.58</p>
+                <p><strong>Email:</strong> info@truongthinhphatholding.com</p>
+            </div>
+
+            <!-- Cột 3: Danh mục sản phẩm -->
+            <div class="col-md-4 mb-4">
+                <h6 class="fw-bold text-uppercase">Danh mục sản phẩm</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Sản phẩm chăm sóc sức khỏe</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Thiết bị bảo hộ y tế</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Thiết bị y tế & vật tư tiêu hao</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="bottom-bar text-white text-center">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap">
+            <span>&copy; 2021 truongthinhphatholding.vn</span>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f text-white me-2"></i></a>
+                <a href="#"><i class="fab fa-youtube text-white me-2"></i></a>
+                <a href="#"><i class="fab fa-google-plus-g text-white me-2"></i></a>
+                <a href="#"><i class="fab fa-twitter text-white"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>
