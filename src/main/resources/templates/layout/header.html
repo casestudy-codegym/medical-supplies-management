@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- Fragment header để include vào các trang khác -->
+<div th:fragment="header">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+
+    <header class="header">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <div class="logo">
+                    <i class="fas fa-cogs"></i>
+                    Hệ thống quản lý
+                </div>
+            </div>
+
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <ul class="nav-menu" id="navMenu">
+                <!-- Quản lý hệ thống -->
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link" onclick="toggleDropdown(event, this)">
+                            <span>
+                                <i class="fas fa-tools"></i>
+                                Quản lý hệ thống
+                            </span>
+                    </a>
+                    <div class="dropdown">
+                        <a th:href="@{/admin/add-employee-account}" class="dropdown-item">
+                            <i class="fas fa-user-plus"></i>
+                            Thêm tài khoản
+                        </a>
+                        <a th:href="@{/admin/change-password}" class="dropdown-item">
+                            <i class="fas fa-key"></i>
+                            Đổi mật khẩu
+                        </a>
+                        <a th:href="@{/admin/language}" class="dropdown-item">
+                            <i class="fas fa-globe"></i>
+                            Ngôn ngữ
+                        </a>
+                    </div>
+                </li>
+
+                <!-- Danh mục quản lý -->
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link" onclick="toggleDropdown(event, this)">
+                            <span>
+                                <i class="fas fa-list"></i>
+                                Danh mục quản lý
+                            </span>
+                    </a>
+                    <div class="dropdown">
+                        <!-- Quản lý thông tin -->
+                        <div class="dropdown-submenu">
+                            <a href="#" class="dropdown-item" onclick="toggleSubmenu(event, this)">
+                                <i class="fas fa-info-circle"></i>
+                                Quản lý thông tin
+                            </a>
+                            <div class="dropdown-sub">
+                                <a th:href="@{/management/staff}" class="dropdown-item">
+                                    <i class="fas fa-users"></i>
+                                    Nhân viên
+                                </a>
+                                <a th:href="@{/management/customers}" class="dropdown-item">
+                                    <i class="fas fa-user-friends"></i>
+                                    Khách hàng
+                                </a>
+                                <a th:href="@{/management/materials}" class="dropdown-item">
+                                    <i class="fas fa-boxes"></i>
+                                    Vật tư
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Quản lý kho -->
+                        <div class="dropdown-submenu">
+                            <a href="#" class="dropdown-item" onclick="toggleSubmenu(event, this)">
+                                <i class="fas fa-warehouse"></i>
+                                Quản lý kho
+                            </a>
+                            <div class="dropdown-sub">
+                                <a th:href="@{/warehouse/import}" class="dropdown-item">
+                                    <i class="fas fa-arrow-down"></i>
+                                    Nhập kho
+                                </a>
+                                <div class="dropdown-submenu">
+                                    <a href="#" class="dropdown-item" onclick="toggleSubmenu(event, this)">
+                                        <i class="fas fa-arrow-up"></i>
+                                        Xuất kho
+                                    </a>
+                                    <div class="dropdown-sub">
+                                        <a th:href="@{/warehouse/sales}" class="dropdown-item">
+                                            <i class="fas fa-shopping-cart"></i>
+                                            Bán hàng
+                                        </a>
+                                        <a th:href="@{/warehouse/returns}" class="dropdown-item">
+                                            <i class="fas fa-undo"></i>
+                                            Trả hàng
+                                        </a>
+                                        <a th:href="@{/warehouse/cancel}" class="dropdown-item">
+                                            <i class="fas fa-times"></i>
+                                            Hủy
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lương -->
+                        <a th:href="@{/management/salary}" class="dropdown-item">
+                            <i class="fas fa-money-bill-wave"></i>
+                            Lương
+                        </a>
+                    </div>
+                </li>
+
+                <!-- Thống kê -->
+                <li class="nav-item">
+                    <a th:href="@{/statistics}" class="nav-link">
+                            <span>
+                                <i class="fas fa-chart-bar"></i>
+                                Thống kê
+                            </span>
+                    </a>
+                </li>
+
+                <!-- Trợ giúp -->
+                <li class="nav-item">
+                    <a th:href="@{/help}" class="nav-link">
+                            <span>
+                                <i class="fas fa-question-circle"></i>
+                                Trợ giúp
+                            </span>
+                    </a>
+                </li>
+
+                <!-- User info on mobile -->
+                <li class="nav-item mobile-user-info">
+                    <!-- Hiển thị thông tin người dùng nếu đã đăng nhập -->
+                    <div class="user-info" sec:authorize="isAuthenticated()">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span sec:authentication="name">Admin</span>
+                    </div>
+                    <!-- Hiển thị nút đăng nhập nếu chưa đăng nhập -->
+                    <div class="login-button" sec:authorize="!isAuthenticated()">
+                        <a th:href="@{/auth/login}" class="btn-login">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Đăng nhập
+                        </a>
+                    </div>
+                </li>
+            </ul>
+
+            <!-- User info on desktop -->
+            <!-- Hiển thị thông tin người dùng nếu đã đăng nhập -->
+            <div class="user-info desktop-user-info" sec:authorize="isAuthenticated()">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span sec:authentication="name">Admin</span>
+                <a th:href="@{/auth/logout}" class="logout-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+            <!-- Hiển thị nút đăng nhập nếu chưa đăng nhập -->
+            <div class="login-button desktop-login" sec:authorize="!isAuthenticated()">
+                <a th:href="@{/auth/login}" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Đăng nhập
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <script>
+        function toggleMobileMenu() {
+            const navMenu = document.getElementById('navMenu');
+            const toggleBtn = document.querySelector('.mobile-menu-toggle i');
+
+            navMenu.classList.toggle('active');
+
+            if (navMenu.classList.contains('active')) {
+                toggleBtn.className = 'fas fa-times';
+            } else {
+                toggleBtn.className = 'fas fa-bars';
+                // Close all dropdowns when menu closes
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelectorAll('.dropdown-submenu').forEach(submenu => {
+                    submenu.classList.remove('active');
+                });
+            }
+        }
+
+        function toggleDropdown(event, element) {
+            event.preventDefault();
+
+            if (window.innerWidth <= 768) {
+                const navItem = element.closest('.nav-item');
+                const isActive = navItem.classList.contains('active');
+
+                // Close all other dropdowns
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    if (item !== navItem) {
+                        item.classList.remove('active');
+                    }
+                });
+
+                // Toggle current dropdown
+                navItem.classList.toggle('active');
+            } else {
+                // Desktop behavior
+                const navItem = element.closest('.nav-item');
+                const dropdown = navItem.querySelector('.dropdown');
+                
+                // Check if dropdown is visible
+                const isVisible = dropdown.style.opacity === '1';
+                
+                // Close all other dropdowns first
+                document.querySelectorAll('.nav-item .dropdown').forEach(d => {
+                    if (d !== dropdown) {
+                        d.style.opacity = '0';
+                        d.style.visibility = 'hidden';
+                        d.style.transform = 'translateY(-10px)';
+                    }
+                });
+                
+                // Toggle current dropdown
+                if (isVisible) {
+                    dropdown.style.opacity = '0';
+                    dropdown.style.visibility = 'hidden';
+                    dropdown.style.transform = 'translateY(-10px)';
+                } else {
+                    dropdown.style.opacity = '1';
+                    dropdown.style.visibility = 'visible';
+                    dropdown.style.transform = 'translateY(0)';
+                }
+            }
+        }
+
+        function toggleSubmenu(event, element) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (window.innerWidth <= 768) {
+                const submenu = element.closest('.dropdown-submenu');
+                submenu.classList.toggle('active');
+            } else {
+                // Desktop behavior for submenus - keep them open on click
+                const submenu = element.closest('.dropdown-submenu');
+                const dropdown = submenu.querySelector('.dropdown-sub');
+                
+                dropdown.style.opacity = '1';
+                dropdown.style.visibility = 'visible';
+                dropdown.style.transform = 'translateX(0)';
+            }
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            // Only handle outside clicks for desktop mode
+            if (window.innerWidth > 768) {
+                // Check if click was outside any nav-item
+                let clickedOutside = true;
+                document.querySelectorAll('.nav-item.has-dropdown').forEach(item => {
+                    if (item.contains(event.target)) {
+                        clickedOutside = false;
+                    }
+                });
+                
+                // If clicked outside, close all dropdowns
+                if (clickedOutside) {
+                    document.querySelectorAll('.dropdown').forEach(dropdown => {
+                        dropdown.style.opacity = '0';
+                        dropdown.style.visibility = 'hidden';
+                        dropdown.style.transform = 'translateY(-10px)';
+                    });
+                }
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                const navMenu = document.getElementById('navMenu');
+                const toggleBtn = document.querySelector('.mobile-menu-toggle i');
+
+                navMenu.classList.remove('active');
+                toggleBtn.className = 'fas fa-bars';
+
+                // Reset mobile states
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelectorAll('.dropdown-submenu').forEach(submenu => {
+                    submenu.classList.remove('active');
+                });
+            }
+        });
+
+        // Show/hide user info based on screen size
+        function updateUserInfoVisibility() {
+            const mobileUserInfo = document.querySelector('.mobile-user-info');
+            const desktopUserInfo = document.querySelector('.desktop-user-info');
+
+            if (window.innerWidth <= 768) {
+                if (mobileUserInfo) mobileUserInfo.style.display = 'block';
+                if (desktopUserInfo) desktopUserInfo.style.display = 'none';
+            } else {
+                if (mobileUserInfo) mobileUserInfo.style.display = 'none';
+                if (desktopUserInfo) desktopUserInfo.style.display = 'flex';
+            }
+        }
+
+        // Initial call and resize listener
+        updateUserInfoVisibility();
+        window.addEventListener('resize', updateUserInfoVisibility);
+    </script>
+</div>
+</body>
+</html>
