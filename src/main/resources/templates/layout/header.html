@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
 </head>
@@ -221,10 +222,10 @@
                 // Desktop behavior
                 const navItem = element.closest('.nav-item');
                 const dropdown = navItem.querySelector('.dropdown');
-                
+
                 // Check if dropdown is visible
                 const isVisible = dropdown.style.opacity === '1';
-                
+
                 // Close all other dropdowns first
                 document.querySelectorAll('.nav-item .dropdown').forEach(d => {
                     if (d !== dropdown) {
@@ -233,7 +234,7 @@
                         d.style.transform = 'translateY(-10px)';
                     }
                 });
-                
+
                 // Toggle current dropdown
                 if (isVisible) {
                     dropdown.style.opacity = '0';
@@ -258,7 +259,7 @@
                 // Desktop behavior for submenus - keep them open on click
                 const submenu = element.closest('.dropdown-submenu');
                 const dropdown = submenu.querySelector('.dropdown-sub');
-                
+
                 dropdown.style.opacity = '1';
                 dropdown.style.visibility = 'visible';
                 dropdown.style.transform = 'translateX(0)';
@@ -266,7 +267,7 @@
         }
 
         // Close dropdowns when clicking outside
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             // Only handle outside clicks for desktop mode
             if (window.innerWidth > 768) {
                 // Check if click was outside any nav-item
@@ -276,7 +277,7 @@
                         clickedOutside = false;
                     }
                 });
-                
+
                 // If clicked outside, close all dropdowns
                 if (clickedOutside) {
                     document.querySelectorAll('.dropdown').forEach(dropdown => {
@@ -289,7 +290,7 @@
         });
 
         // Handle window resize
-        window.addEventListener('resize', function() {
+        window.addEventListener('resize', function () {
             if (window.innerWidth > 768) {
                 const navMenu = document.getElementById('navMenu');
                 const toggleBtn = document.querySelector('.mobile-menu-toggle i');

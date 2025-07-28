@@ -1,10 +1,7 @@
 package com.medicalsuppliesmanagement.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "customers")
@@ -15,7 +12,7 @@ import lombok.Setter;
 public class Customer {
 
     public enum CustomerType {
-        WHOLESALE, SUPPLIER, RETAIL // (sỉ, nhà cc, lẻ )
+        WHOLESALE, SUPPLIER, RETAIL
     }
 
     @Id
@@ -40,5 +37,8 @@ public class Customer {
 
     @Column(name = "email")
     private String email;
-}
 
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "userId")
+    private UserAccount user;
+}
