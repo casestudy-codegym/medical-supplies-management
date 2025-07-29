@@ -15,6 +15,10 @@ public interface CustomerService {
     void deleteById(Long id);
     Customer update(Customer customer);
     Optional<Customer> findByCustomerCode(String code);
-
+    Page<Customer> searchCustomers(String keyword, String type, int page, int size);
     void deleteByIds(List<Long> ids);
+
+    List<Customer> getAllCustomers();
+
+    long countCustomers();
 } 

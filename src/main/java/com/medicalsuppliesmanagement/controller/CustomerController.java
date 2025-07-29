@@ -25,15 +25,18 @@ public class CustomerController {
     @GetMapping("/customers")
     public String listCustomers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String type,
             Model model) {
 
-        Page<Customer> customerPage = customerService.findByNameContainingIgnoreCase(keyword, PageRequest.of(page, 5));
+        int size = 10;
+        Page<?> customerPage = customerService.searchCustomers(keyword, type, page, size);
 
         model.addAttribute("customers", customerPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", customerPage.getTotalPages());
         model.addAttribute("keyword", keyword);
+        model.addAttribute("type", type);
         return "customer/list";
     }
 
