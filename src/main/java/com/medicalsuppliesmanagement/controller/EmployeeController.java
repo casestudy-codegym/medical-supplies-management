@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/employees")
 public class EmployeeController {
@@ -25,20 +27,22 @@ public class EmployeeController {
     public String listEmployees(@RequestParam(defaultValue = "0") int page,
                                 @RequestParam(defaultValue = "5") int size,
                                 @RequestParam(required = false) String keyword,
+                                @RequestParam(required = false) String position,
                                 Model model) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Employee> employeePage;
-
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            employeePage = service.searchByFullName(keyword.trim(), pageable);
-        } else {
-            employeePage = service.findAll(pageable);
-        }
+        Page<Employee> employeePage = service.searchEmployees(
+                keyword != null ? keyword.trim() : null,
+                position != null && !position.equals("ALL") ? position : null,
+                pageable
+        );
 
         model.addAttribute("employeePage", employeePage);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("position", position);
+        model.addAttribute("positions", service.getAllDistinctPositions()); // để render dropdown
         return "employee/list";
     }
+
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
@@ -142,13 +146,31 @@ public class EmployeeController {
         return "redirect:/employees";
     }
 
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @PostMapping("/delete/{id}")
+    public String deleteEmployee(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
-            service.deleteById(id);
-            redirectAttributes.addFlashAttribute("success", "Xóa nhân viên thành công!");
+           service.deleteById(id);
+            redirectAttributes.addFlashAttribute("success", "Đã xóa nhân viên thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra khi xóa: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Không thể xóa nhân viên này. Vui lòng kiểm tra ràng buộc dữ liệu!");
+        }
+        return "redirect:/employees";
+    }
+
+    // Xóa nhiều nhân viên
+    @PostMapping("/delete-multiple")
+    public String deleteMultipleEmployees(@RequestParam(value = "selectedIds", required = false) List<Long> selectedIds,
+                                          RedirectAttributes redirectAttributes) {
+        if (selectedIds == null || selectedIds.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng chọn ít nhất một nhân viên để xóa!");
+            return "redirect:/employees";
+        }
+
+        try {
+           service.deleteMultiple(selectedIds);
+            redirectAttributes.addFlashAttribute("success", "Đã xóa " + selectedIds.size() + " nhân viên!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Không thể xóa một số nhân viên. Vui lòng kiểm tra ràng buộc dữ liệu!");
         }
         return "redirect:/employees";
     }

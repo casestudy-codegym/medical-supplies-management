@@ -48,7 +48,8 @@ public class CustomerController {
     }
 
     @PostMapping("/new")
-    public String addCustomer(@Valid @ModelAttribute Customer customer, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+    public String addCustomer(@Valid @ModelAttribute Customer customer, BindingResult result,
+                              Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             model.addAttribute("action", "Thêm khách hàng");
             return "customer/add";
@@ -61,7 +62,7 @@ public class CustomerController {
         }
 
         customerService.save(customer);
-        redirectAttributes.addFlashAttribute("successMessage", "Thêm khách hàng thành công!");
+        redirectAttributes.addFlashAttribute("success", "Thêm khách hàng thành công!");
         return "redirect:/management/customers";
     }
 
@@ -70,7 +71,7 @@ public class CustomerController {
     public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         Customer customer = customerService.findById(id);
         if (customer == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy khách hàng!");
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy khách hàng!");
             return "redirect:/management/customers";
         }
 
@@ -97,7 +98,7 @@ public class CustomerController {
 
         customer.setCustomerId(id);
         customerService.update(customer);
-        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật khách hàng thành công!");
+        redirectAttributes.addFlashAttribute("success", "Cập nhật khách hàng thành công!");
         return "redirect:/management/customers";
     }
 
@@ -107,16 +108,14 @@ public class CustomerController {
         try {
             Customer customer = customerService.findById(id);
             if (customer == null) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy khách hàng cần xóa!");
+                redirectAttributes.addFlashAttribute("error", "Không tìm thấy khách hàng cần xóa!");
                 return "redirect:/management/customers";
             }
 
             customerService.deleteById(id);
-            redirectAttributes.addFlashAttribute("successMessage",
-                    "Đã xóa khách hàng: " + customer.getName());
+            redirectAttributes.addFlashAttribute("success", "Đã xóa khách hàng: " + customer.getName());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Không thể xóa khách hàng. Có thể khách hàng đang được sử dụng trong hệ thống!");
+            redirectAttributes.addFlashAttribute("error", "Không thể xóa khách hàng. Có thể khách hàng đang được sử dụng trong hệ thống!");
         }
         return "redirect:/management/customers";
     }
@@ -126,17 +125,15 @@ public class CustomerController {
     public String deleteSelected(@RequestParam(value = "selectedIds", required = false) List<Long> ids,
                                  RedirectAttributes redirectAttributes) {
         if (ids == null || ids.isEmpty()) {
-            redirectAttributes.addFlashAttribute("warningMessage", "Vui lòng chọn ít nhất một khách hàng để xóa!");
+            redirectAttributes.addFlashAttribute("error", "Vui lòng chọn ít nhất một khách hàng để xóa!");
             return "redirect:/management/customers";
         }
 
         try {
             customerService.deleteByIds(ids);
-            redirectAttributes.addFlashAttribute("successMessage",
-                    "Đã xóa thành công " + ids.size() + " khách hàng!");
+            redirectAttributes.addFlashAttribute("success", "Đã xóa thành công " + ids.size() + " khách hàng!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Không thể xóa một số khách hàng. Có thể chúng đang được sử dụng trong hệ thống!");
+            redirectAttributes.addFlashAttribute("error", "Không thể xóa một số khách hàng. Có thể chúng đang được sử dụng trong hệ thống!");
         }
 
         return "redirect:/management/customers";
