@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý khách hàng</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .table th {
+            background-color: #293A58;
+            color: white;
+        }
+
+        .pagination .page-link {
+            color: #fff;
+            background-color: #293A58;
+            border: 1px solid #293A58;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #1e2c45;
+            color: #fff;
+        }
+
+        .pagination .active .page-link {
+            background-color: #1e2c45;
+            border-color: #1e2c45;
+            color: #fff;
+        }
+
+        .pagination .disabled .page-link {
+            background-color: #e9ecef;
+            color: #6c757d;
+            pointer-events: none;
+        }
+
+        .search-form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #293A58;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{layout/header :: header}"></div>
+<div class="container-fluid text-center my-4">
+    <h2 class="fw-bold" style="color: #293A58;">QUẢN LÝ KHÁCH HÀNG</h2>
+</div>
+
+<div class="container">
+    <!-- Hiển thị thông báo thành công -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Hiển thị thông báo lỗi -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <!-- Enhanced Search Form -->
+    <div class="search-form">
+        <form method="get" th:action="@{/management/customers}">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="keyword" class="form-label">
+                        <i class="bi bi-search me-1"></i>Tìm theo tên
+                    </label>
+                    <input type="text" id="keyword" name="keyword" class="form-control"
+                           th:value="${keyword}" placeholder="Nhập tên khách hàng...">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="type" class="form-label">
+                        <i class="bi bi-person-badge me-1"></i>Loại khách hàng
+                    </label>
+                    <select id="type" name="type" class="form-select">
+                        <option value="">-- Tất cả loại --</option>
+                        <option value="WHOLESALE" th:selected="${type == 'WHOLESALE'}">Khách sỉ</option>
+                        <option value="SUPPLIER" th:selected="${type == 'SUPPLIER'}">Nhà cung cấp</option>
+                        <option value="RETAIL" th:selected="${type == 'RETAIL'}">Khách lẻ</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-search me-1"></i>Tìm kiếm
+                        </button>
+                        <a href="/management/customers" class="btn btn-outline-secondary px-3" title="Xóa bộ lọc">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <a th:href="@{/management/new}" class="btn btn-success w-100">
+                        <i class="bi bi-plus-circle me-1"></i>Thêm mới
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bulk Actions -->
+    <form method="post" th:action="@{/management/customers/delete-multiple}" id="bulkDeleteForm">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="text-muted">
+                <small th:if="${customers != null}">
+                    Hiển thị <strong th:text="${#lists.size(customers)}"></strong> khách hàng
+                </small>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle bg-white rounded-3 overflow-hidden">
+                <thead class="table-dark">
+                <tr>
+                    <th style="width: 50px;">
+                        <input type="checkbox" id="selectAll" class="form-check-input"/>
+                    </th>
+                    <th>Mã KH</th>
+                    <th>Tên</th>
+                    <th>Loại</th>
+                    <th>Địa chỉ</th>
+                    <th>SĐT</th>
+                    <th>Email</th>
+                    <th>Xóa</th>
+                    <th>Sửa</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="customer : ${customers}">
+                    <td>
+                        <input type="checkbox" name="selectedIds" th:value="${customer.customerId}"
+                               class="selectBox form-check-input"/>
+                    </td>
+                    <td>
+                        <span class="badge bg-light text-dark border" th:text="${customer.customerCode}"></span>
+                    </td>
+                    <td>
+                        <div class="fw-semibold" th:text="${customer.name}"></div>
+                    </td>
+                    <td>
+                  <span class="badge"
+                        th:classappend="${customer.type.name() == 'WHOLESALE' ? 'bg-primary'
+                       : (customer.type.name() == 'SUPPLIER' ? 'bg-warning' : 'bg-info')}"
+                        th:text="${customer.typeVN}">
+                  </span>
+                    </td>
+                    <td th:text="${customer.address}"></td>
+                    <td>
+                        <a class="text-decoration-none"
+                           th:text="${customer.phone}"></a>
+                    </td>
+                    <td>
+                        <a class="text-decoration-none"
+                           th:text="${customer.email}"></a>
+                    </td>
+                    <td>
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-btn"
+                                    th:attr="data-id=${customer.customerId},data-name=${customer.name}"
+                                    title="Xóa khách hàng">
+                                <i class="bi bi-trash3"></i>Xóa
+                            </button>
+                    </td>
+                    <td>
+                            <a th:href="@{'/management/edit/' + ${customer.customerId}}"
+                               class="btn btn-sm btn-outline-warning" title="Sửa thông tin">
+                                <i class="bi bi-pencil-square"></i>Sửa
+                            </a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(customers)}">
+                    <td colspan="8" class="text-center py-5">
+                        <div class="text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                            <p class="mb-0">Không tìm thấy khách hàng nào</p>
+                            <small>Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</small>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-danger" id="bulkDeleteBtn">
+            <i class="bi bi-trash me-1"></i>Xóa đã chọn
+        </button>
+    </form>
+
+    <!-- Pagination -->
+    <nav th:if="${totalPages > 1}" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:if="${currentPage > 0}">
+                <a class="page-link"
+                   th:href="@{/management/customers(page=${currentPage - 1}, keyword=${keyword}, type=${type})}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/management/customers(page=${i}, keyword=${keyword}, type=${type})}"
+                   th:text="${i + 1}">1</a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage < totalPages - 1}">
+                <a class="page-link"
+                   th:href="@{/management/customers(page=${currentPage + 1}, keyword=${keyword}, type=${type})}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Modal Xác Nhận Xóa Đơn -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content shadow-lg rounded-3 border-0">
+            <div class="modal-header text-white" style="background-color: #293a58; border-bottom: none;">
+                <h5 class="modal-title fw-bold" id="deleteModalLabel">
+                    <i class="bi bi-exclamation-triangle me-2 fs-5"></i>
+                    Xác nhận xóa
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Đóng"></button>
+            </div>
+
+            <div class="modal-body text-center px-5 py-4">
+                <div class="mb-3">
+                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                         style="width: 70px; height: 70px; background-color: rgba(41, 58, 88, 0.1);">
+                        <i class="bi bi-trash3 fs-2" style="color: #293a58;"></i>
+                    </div>
+                    <p class="text-muted mb-2">Bạn có chắc chắn muốn xóa khách hàng</p>
+                    <h6 class="fw-bold text-dark" id="customerName" style="font-size: 1.15rem;"></h6>
+                    <div class="alert border-0 py-2 mt-3" style="background-color: #e2e3f3;">
+                        <small class="text-primary">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Hành động này không thể hoàn tác!
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer border-0 px-5 pb-4 pt-0">
+                <form id="deleteForm" method="post" action="#" class="w-100">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf}"/>
+                    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                        <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-1"></i>Hủy bỏ
+                        </button>
+                        <button type="submit" class="btn px-4 py-2" style="background-color: #293a58; color: white;">
+                            <i class="bi bi-trash3 me-1"></i>Xóa ngay
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Xác Nhận Xóa Nhiều -->
+<div class="modal fade" id="bulkDeleteModal" tabindex="-1" aria-labelledby="bulkDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow border-0">
+            <div class="modal-header text-white" style="background-color: #293a58;">
+                <div class="d-flex align-items-center">
+                    <div class="bg-white bg-opacity-25 rounded-circle p-2 me-3">
+                        <i class="bi bi-trash3-fill text-white fs-4"></i>
+                    </div>
+                    <h5 class="modal-title fw-bold mb-0" id="bulkDeleteModalLabel">Xóa nhiều khách hàng</h5>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Đóng"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="noSelectionMessage" class="text-center" style="display: none;">
+                    <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                         style="width: 60px; height: 60px;">
+                        <i class="bi bi-exclamation-triangle text-warning fs-2"></i>
+                    </div>
+                    <h6 class="text-dark mb-2">Chưa chọn khách hàng</h6>
+                    <p class="text-muted mb-0">Vui lòng chọn ít nhất một khách hàng để thực hiện xóa!</p>
+                </div>
+
+                <div id="confirmMessage" class="text-center" style="display: none;">
+                    <div class="bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                         style="width: 60px; height: 60px;">
+                        <i class="bi bi-trash3-fill text-danger fs-2"></i>
+                    </div>
+                    <h6 class="text-dark mb-2">Xác nhận xóa khách hàng</h6>
+                    <p class="mb-3">Bạn đang chuẩn bị xóa <span class="badge bg-danger fs-6 px-3 py-2"
+                                                                id="selectedCount">0</span> khách hàng</p>
+                    <div class="alert alert-danger border-0 py-3" style="background-color: #f8d7da;">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                            <small class="text-danger-emphasis fw-semibold">
+                                Hành động này không thể hoàn tác!
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer border-0">
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center w-100">
+                    <button type="button" class="btn btn-light border px-4 py-2" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Hủy bỏ
+                    </button>
+                    <button type="button" class="btn btn-danger px-4 py-2" id="confirmBulkDelete"
+                            style="display: none;">
+                        <i class="bi bi-trash3-fill me-1"></i>Xóa tất cả
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        const bulkDeleteModal = new bootstrap.Modal(document.getElementById('bulkDeleteModal'));
+
+        // Xóa từng khách hàng
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const customerId = this.getAttribute('data-id');
+                const customerName = this.getAttribute('data-name');
+
+                document.getElementById('customerName').textContent = customerName;
+                const deleteForm = document.getElementById('deleteForm');
+                deleteForm.action = `/management/customers/delete/${customerId}`;
+
+                deleteModal.show();
+            });
+        });
+
+        // Xử lý nút xóa nhiều
+        document.getElementById('bulkDeleteBtn').addEventListener('click', function () {
+            const selectedCheckboxes = document.querySelectorAll('.selectBox:checked');
+            const selectedCount = selectedCheckboxes.length;
+
+            document.getElementById('noSelectionMessage').style.display = 'none';
+            document.getElementById('confirmMessage').style.display = 'none';
+            document.getElementById('confirmBulkDelete').style.display = 'none';
+
+            if (selectedCount === 0) {
+                document.getElementById('noSelectionMessage').style.display = 'block';
+            } else {
+                document.getElementById('selectedCount').textContent = selectedCount;
+                document.getElementById('confirmMessage').style.display = 'block';
+                document.getElementById('confirmBulkDelete').style.display = 'inline-block';
+            }
+
+            bulkDeleteModal.show();
+        });
+
+        // Xác nhận xóa nhiều
+        document.getElementById('confirmBulkDelete').addEventListener('click', function () {
+            document.getElementById('bulkDeleteForm').submit();
+        });
+    });
+
+    // Select all checkbox
+    document.getElementById('selectAll').addEventListener('change', function () {
+        const checked = this.checked;
+        document.querySelectorAll('.selectBox').forEach(cb => cb.checked = checked);
+    });
+</script>
+</body>
+</html>
