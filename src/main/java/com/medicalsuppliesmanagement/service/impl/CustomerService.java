@@ -21,11 +21,16 @@ public class CustomerService implements ICustomerService {
 
         CustomerDto dto = new CustomerDto();
         dto.setUsername(customer.getUser().getUsername());
-        dto.setFullName(customer.getUser().getFullName());
-        dto.setAvatarUrl(customer.getUser().getAvatarUrl());
+        dto.setName(customer.getUser().getFullName());
+
+        String avatarUrl = customer.getUser().getAvatarUrl();
+        if (avatarUrl == null || avatarUrl.isBlank()) {
+            dto.setAvatarUrl("https://www.w3schools.com/howto/img_avatar.png");
+        } else {
+            dto.setAvatarUrl(avatarUrl);
+        }
 
         dto.setCustomerCode(customer.getCustomerCode());
-        dto.setName(customer.getName());
         dto.setPhone(customer.getPhone());
         dto.setEmail(customer.getEmail());
         dto.setAddress(customer.getAddress());
@@ -33,4 +38,21 @@ public class CustomerService implements ICustomerService {
 
         return dto;
     }
+
+    @Override
+    public void updateCustomer(CustomerDto dto) {
+        Customer customer = customerRepository.findByUser_Username(dto.getUsername())
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        customer.setPhone(dto.getPhone());
+        customer.setEmail(dto.getEmail());
+        customer.setAddress(dto.getAddress());
+        customer.setType(dto.getType());
+
+        customer.getUser().setFullName(dto.getName());
+        customer.getUser().setAvatarUrl(dto.getAvatarUrl());
+
+        customerRepository.save(customer);
+    }
+
 }

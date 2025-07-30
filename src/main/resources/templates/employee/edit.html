@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chỉnh sửa thông tin nhân viên</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f2f2f2;
+            padding: 30px;
+            color: #293a58;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 900px;
+            margin: auto;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        form h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="file"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        #avatarPreview {
+            display: block;
+            margin: 20px auto 10px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #293a58;
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn-submit, .btn-back {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            min-width: 150px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-submit {
+            background-color: #293a58;
+            color: white;
+        }
+
+        .btn-back {
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-submit:hover {
+            background-color: #1c2940;
+        }
+
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+<form th:action="@{/employee/edit}" th:object="${employee}" method="post">
+    <h2>Chỉnh sửa thông tin cá nhân</h2>
+
+    <div class="form-grid">
+        <div class="form-item">
+            <label>Tên đăng nhập:</label>
+            <input type="text" th:field="*{username}" readonly/>
+        </div>
+
+        <div class="form-item">
+            <label>Họ tên:</label>
+            <input type="text" th:field="*{fullName}" required/>
+        </div>
+
+        <div class="form-item">
+            <label>Mã nhân viên:</label>
+            <input type="text" th:field="*{employeeCode}" readonly/>
+        </div>
+
+        <div class="form-item">
+            <label>Số điện thoại:</label>
+            <input type="text" th:field="*{phone}"/>
+        </div>
+
+        <div class="form-item">
+            <label>Email:</label>
+            <input type="email" th:field="*{email}"/>
+        </div>
+
+        <div class="form-item">
+            <label>Địa chỉ:</label>
+            <input type="text" th:field="*{address}"/>
+        </div>
+
+        <div class="form-item">
+            <label>Ngày sinh:</label>
+            <input type="date" th:field="*{dateOfBirth}"/>
+        </div>
+
+        <div class="form-item">
+            <label>Ảnh đại diện:</label>
+            <input type="file" id="avatarFileInput" accept="image/*"/>
+        </div>
+    </div>
+
+    <img id="avatarPreview"
+         th:src="${employee.avatarUrl}"
+         alt="Xem trước ảnh đại diện"/>
+
+    <input type="hidden" id="avatarUrlInput" th:field="*{avatarUrl}"/>
+
+    <div class="button-group">
+        <button type="submit" class="btn-submit">Cập nhật</button>
+        <a th:href="@{/employee/profile}" class="btn-back">Trở về</a>
+    </div>
+</form>
+
+<script>
+    const avatarInput = document.getElementById('avatarFileInput');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const avatarUrlInput = document.getElementById('avatarUrlInput');
+
+    avatarInput.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            avatarPreview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'medical_supplies_management');
+
+        fetch('https://api.cloudinary.com/v1_1/dkxc1x4ic/image/upload', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                avatarUrlInput.value = data.secure_url;
+            })
+            .catch(error => {
+                alert('Lỗi khi tải ảnh lên Cloudinary');
+                console.error(error);
+            });
+    });
+</script>
+</body>
+</html>

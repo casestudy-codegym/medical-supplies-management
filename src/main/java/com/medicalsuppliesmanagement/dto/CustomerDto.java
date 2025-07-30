@@ -8,10 +8,9 @@ import lombok.Setter;
 @Setter
 public class CustomerDto {
     private String username;
-    private String fullName;
+    private String name;
     private String avatarUrl;
     private String customerCode;
-    private String name;
     private String phone;
     private String email;
     private String address;

@@ -4,4 +4,5 @@ import com.medicalsuppliesmanagement.dto.CustomerDto;
 
 public interface ICustomerService {
     CustomerDto getCustomerProfile(String username);
+    void updateCustomer(CustomerDto dto);
 }
