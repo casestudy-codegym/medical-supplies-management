@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -107,6 +108,21 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
+    public Page<Employee> searchEmployees(String keyword, String position, Pageable pageable) {
+        return employeeRepository.searchEmployees(keyword, position, pageable);
+    }
+
+    @Override
+    public Optional<Employee> findByEmployeeCode(String employeeCode) {
+        return  employeeRepository.findByEmployeeCode(employeeCode);
+    }
+
+    @Override
+    public List<String> getAllDistinctPositions() {
+        return employeeRepository.findAllDistinctPositions();
+    }
+
+    @Override
     public Optional<Employee> findById(Long id) {
         return employeeRepository.findById(id);
     }
@@ -126,5 +142,31 @@ public class EmployeeService implements IEmployeeService {
         Long userId = employee.getUserAccount().getUserId();
         employeeRepository.deleteById(id);
         userRepository.deleteById(userId);
+    }
+
+    @Override
+    public void deleteMultiple(List<Long> employeeIds) {
+        // Lấy danh sách nhân viên để kiểm tra trước khi xóa
+        List<Employee> employees = employeeRepository.findAllById(employeeIds);
+        if (employees.isEmpty()) {
+            throw new IllegalArgumentException("Không tìm thấy nhân viên nào để xóa");
+        }
+
+        // Xóa từng nhân viên và tài khoản của họ
+        for (Employee employee : employees) {
+            Long userId = employee.getUserAccount().getUserId();
+            employeeRepository.deleteById(employee.getEmployeeId());
+            userRepository.deleteById(userId);
+        }
+    }
+
+    @Override
+    public boolean existsByEmployeeCode(String employeeCode) {
+        return  employeeRepository.existsByEmployeeCode(employeeCode);
+    }
+
+    @Override
+    public long countEmployees() {
+        return employeeRepository.count();
     }
 }
