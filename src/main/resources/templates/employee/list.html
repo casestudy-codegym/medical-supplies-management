@@ -8,24 +8,26 @@
         body {
             font-family: Arial, Helvetica, sans-serif;
             background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
         }
-        .main-content { margin-top: 20px; }
-        h2 { color: #293A58; font-weight: bold; }
-        .table thead { background-color: #293A58; color: white; }
-        .table td, .table th { vertical-align: middle; }
-        .table-hover tbody tr:hover { background-color: #e2e6ea; }
+        .main-content {
+            margin-top: 20px;
+        }
         .container {
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
-        @media (max-width: 768px) {
-            .main-content { margin-top: 10px; }
-            .container { margin: 10px; padding: 15px; }
-            .table-responsive { font-size: 0.9rem; }
+        h2 {
+            color: #293A58;
+            font-weight: bold;
+        }
+        .table thead {
+            background-color: #293A58;
+            color: white;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #e2e6ea;
         }
         .pagination .page-link {
             color: #fff;
@@ -54,7 +56,19 @@
 
 <div class="main-content">
     <div class="container mt-4">
-        <h2 class="mb-4">Danh sách nhân viên</h2>
+        <h2 class="mb-4 text-center">QUẢN LÝ NHÂN VIÊN</h2>
+
+        <!-- Hiển thị thông báo thành công -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Hiển thị thông báo lỗi -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
 
         <!-- Tìm kiếm -->
         <div class="d-flex justify-content-between mb-3">
@@ -66,6 +80,7 @@
             <a th:href="@{/employees/create}" class="btn btn-success">+ Thêm nhân viên</a>
         </div>
 
+        <!-- Bảng danh sách -->
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
                 <thead>
@@ -84,48 +99,90 @@
                 </thead>
                 <tbody>
                 <tr th:each="e, iterStat : ${employeePage.content}">
-                    <td th:text="${iterStat.index + 1}"></td>
-                    <td th:text="${e.employeeCode}"></td>
-                    <td th:text="${e.userAccount.fullName}"></td>
-                    <td th:text="${#temporals.format(e.userAccount.dateOfBirth, 'dd/MM/yyyy')}"></td>
-                    <td th:text="${e.userAccount.gender}"></td>
-                    <td th:text="${e.userAccount.address}"></td>
-                    <td th:text="${e.userAccount.phone}"></td>
-                    <td th:text="${e.userAccount.email}"></td>
-                    <td th:text="${e.position}"></td>
+                    <td th:text="${iterStat.index + 1 + (employeePage.number * employeePage.size)}">1</td>
+                    <td th:text="${e.employeeCode}">MNV001</td>
+                    <td th:text="${e.userAccount.fullName}">Nguyễn Văn A</td>
+                    <td th:text="${e.userAccount.dateOfBirth != null ? #temporals.format(e.userAccount.dateOfBirth, 'dd/MM/yyyy') : ''}">01/01/1990</td>
                     <td>
-                        <a th:href="@{'/employees/edit/' + ${e.employeeId}}" class="btn btn-sm btn-warning">Sửa</a>
+                        <span th:if="${e.userAccount.gender == T(com.medicalsuppliesmanagement.entity.UserAccount.Gender).NAM}">Nam</span>
+                        <span th:if="${e.userAccount.gender == T(com.medicalsuppliesmanagement.entity.UserAccount.Gender).NU}">Nữ</span>
+                        <span th:if="${e.userAccount.gender == null}">-</span>
+                    </td>
+                    <td th:text="${e.userAccount.address ?: '-'}">Hà Nội</td>
+                    <td th:text="${e.userAccount.phone ?: '-'}">0123456789</td>
+                    <td th:text="${e.userAccount.email ?: '-'}">email@example.com</td>
+                    <td th:text="${e.position ?: '-'}">Quản lý</td>
+                    <td>
+                        <a th:href="@{'/employees/edit/' + ${e.employeeId}}" class="btn btn-sm btn-warning me-1">Sửa</a>
                         <a th:href="@{'/employees/delete/' + ${e.employeeId}}"
-                           onclick="return confirm('Bạn có chắc chắn muốn xóa?')"
+                           onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?')"
                            class="btn btn-sm btn-danger">Xóa</a>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(employeePage.content)}">
-                    <td colspan="10" class="text-center">Không có nhân viên nào</td>
+                    <td colspan="10" class="text-center text-muted py-4">
+                        <i>Không có nhân viên nào</i>
+                        <span th:if="${keyword != null and !keyword.isEmpty()}" th:text="' phù hợp với từ khóa: ' + ${keyword}"></span>
+                    </td>
                 </tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- Thông tin phân trang -->
+        <div th:if="${employeePage.totalElements > 0}" class="d-flex justify-content-between align-items-center mb-3">
+            <small class="text-muted">
+                Hiển thị <span th:text="${employeePage.number * employeePage.size + 1}">1</span>
+                đến <span th:text="${employeePage.number * employeePage.size + employeePage.numberOfElements}">5</span>
+                trong tổng số <span th:text="${employeePage.totalElements}">20</span> nhân viên
+            </small>
         </div>
 
         <!-- Phân trang -->
         <nav th:if="${employeePage.totalPages > 1}">
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${employeePage.first} ? 'disabled'">
-                    <a class="page-link" th:href="@{/employees(page=${employeePage.number - 1}, keyword=${keyword})}">«</a>
+                    <a class="page-link" th:href="@{/employees(page=${employeePage.number - 1}, keyword=${keyword})}"
+                       th:classappend="${employeePage.first} ? 'disabled'">«</a>
                 </li>
-                <li class="page-item" th:each="i : ${#numbers.sequence(0, employeePage.totalPages - 1)}"
+
+                <!-- Hiển thị trang đầu nếu cần -->
+                <li th:if="${employeePage.number > 2}" class="page-item">
+                    <a class="page-link" th:href="@{/employees(page=0, keyword=${keyword})}">1</a>
+                </li>
+                <li th:if="${employeePage.number > 3}" class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+
+                <!-- Hiển thị các trang xung quanh trang hiện tại -->
+                <li class="page-item"
+                    th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, employeePage.number - 2),
+                                                   T(java.lang.Math).min(employeePage.totalPages - 1, employeePage.number + 2))}"
                     th:classappend="${i == employeePage.number} ? 'active'">
                     <a class="page-link"
                        th:href="@{/employees(page=${i}, keyword=${keyword})}"
                        th:text="${i + 1}">1</a>
                 </li>
+
+                <!-- Hiển thị trang cuối nếu cần -->
+                <li th:if="${employeePage.number < employeePage.totalPages - 4}" class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+                <li th:if="${employeePage.number < employeePage.totalPages - 3}" class="page-item">
+                    <a class="page-link" th:href="@{/employees(page=${employeePage.totalPages - 1}, keyword=${keyword})}"
+                       th:text="${employeePage.totalPages}">10</a>
+                </li>
+
                 <li class="page-item" th:classappend="${employeePage.last} ? 'disabled'">
-                    <a class="page-link" th:href="@{/employees(page=${employeePage.number + 1}, keyword=${keyword})}">»</a>
+                    <a class="page-link" th:href="@{/employees(page=${employeePage.number + 1}, keyword=${keyword})}"
+                       th:classappend="${employeePage.last} ? 'disabled'">»</a>
                 </li>
             </ul>
         </nav>
 
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -40,5 +40,14 @@ public class Customer {
 
     @Column(name = "email")
     private String email;
+
+    public String getTypeVN() {
+        return switch (this.type) {
+            case WHOLESALE -> "Khách sỉ";
+            case SUPPLIER -> "Nhà cung cấp";
+            case RETAIL -> "Khách lẻ";
+        };
+    }
+
 }
 

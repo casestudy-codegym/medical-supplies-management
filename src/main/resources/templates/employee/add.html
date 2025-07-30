@@ -14,40 +14,83 @@
       box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     }
     .form-label { font-weight: 500; }
+    .alert { margin-bottom: 20px; }
   </style>
 </head>
 <body>
 <div th:replace="~{layout/header :: header}"></div>
 <div class="container my-4">
   <h2 class="text-center fw-bold" style="color: #293A58;">THÊM NHÂN VIÊN</h2>
+
+  <!-- Hiển thị thông báo lỗi -->
+  <div th:if="${error}" class="alert alert-danger" role="alert">
+    <span th:text="${error}"></span>
+  </div>
+
   <div class="card p-4">
     <form th:action="@{/employees/save}" th:object="${employee}" method="post" class="needs-validation" novalidate>
+
+      <!-- Thông tin tài khoản -->
+      <h5 class="mb-3" style="color: #293A58;">Thông tin tài khoản</h5>
+
+      <!-- Username -->
+      <div class="mb-3">
+        <label class="form-label">Tên đăng nhập <span class="text-danger">*</span></label>
+        <input type="text" th:field="*{userAccount.username}" class="form-control" required>
+        <div class="invalid-feedback">Vui lòng nhập tên đăng nhập</div>
+      </div>
+
+      <!-- Password -->
+      <div class="mb-3">
+        <label class="form-label">Mật khẩu <span class="text-danger">*</span></label>
+        <input type="password" th:field="*{userAccount.password}" class="form-control" required>
+        <div class="invalid-feedback">Vui lòng nhập mật khẩu</div>
+      </div>
+
+      <!-- Role -->
+      <div class="mb-3">
+        <label class="form-label">Vai trò <span class="text-danger">*</span></label>
+        <select th:field="*{userAccount.role}" class="form-select" required>
+          <option value="" disabled selected>Chọn vai trò</option>
+          <option value="ADMIN">Admin</option>
+          <option value="ACCOUNTANT">Kế toán</option>
+          <option value="SALES">Bán hàng</option>
+        </select>
+        <div class="invalid-feedback">Vui lòng chọn vai trò</div>
+      </div>
+
+      <hr>
+
+      <!-- Thông tin nhân viên -->
+      <h5 class="mb-3" style="color: #293A58;">Thông tin nhân viên</h5>
+
       <!-- Mã nhân viên -->
       <div class="mb-3">
-        <label class="form-label">Mã nhân viên</label>
+        <label class="form-label">Mã nhân viên <span class="text-danger">*</span></label>
         <input type="text" th:field="*{employeeCode}" class="form-control" required>
+        <div class="invalid-feedback">Vui lòng nhập mã nhân viên</div>
       </div>
 
       <!-- Họ tên -->
       <div class="mb-3">
-        <label class="form-label">Họ tên</label>
+        <label class="form-label">Họ tên <span class="text-danger">*</span></label>
         <input type="text" th:field="*{userAccount.fullName}" class="form-control" required>
+        <div class="invalid-feedback">Vui lòng nhập họ tên</div>
       </div>
 
       <!-- Ngày sinh -->
       <div class="mb-3">
         <label class="form-label">Ngày sinh</label>
-        <input type="date" th:field="*{userAccount.dateOfBirth}" class="form-control" required>
+        <input type="date" th:field="*{userAccount.dateOfBirth}" class="form-control">
       </div>
 
       <!-- Giới tính -->
       <div class="mb-3">
         <label class="form-label">Giới tính</label>
-        <select th:field="*{userAccount.gender}" class="form-select" required>
-          <option value="" disabled selected>Chọn giới tính</option>
-          <option value="Nam">Nam</option>
-          <option value="Nữ">Nữ</option>
-          <option value="Khác">Khác</option>
+        <select th:field="*{userAccount.gender}" class="form-select">
+          <option value="">Chọn giới tính</option>
+          <option value="NAM">Nam</option>
+          <option value="NU">Nữ</option>
         </select>
       </div>
 
@@ -83,5 +126,24 @@
     </form>
   </div>
 </div>
+
+<script>
+  // Bootstrap form validation
+  (function() {
+    'use strict';
+    window.addEventListener('load', function() {
+      var forms = document.getElementsByClassName('needs-validation');
+      var validation = Array.prototype.filter.call(forms, function(form) {
+        form.addEventListener('submit', function(event) {
+          if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    }, false);
+  })();
+</script>
 </body>
 </html>
