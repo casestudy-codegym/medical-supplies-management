@@ -84,5 +84,17 @@ public class Material {
             images.add(image);
         }
     }
-
+    public void addImage(Material_Image image) {
+        if (images == null) {
+            images = new ArrayList<>();
+        }
+        images.add(image);
+        image.setMaterial(this);
+    }
+    public void removeImage(Material_Image image) {
+        if (images != null) {
+            images.remove(image);
+            image.setMaterial(null);
+        }
+    }
 }

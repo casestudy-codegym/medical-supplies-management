@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class IMaterialDetailService implements IMaterialDetailServiceI {
+public class MaterialDetailService implements IMaterialDetailServiceI {
     @Autowired
     private IMaterialDetailRepository IMaterialDetailRepository;
     @Override

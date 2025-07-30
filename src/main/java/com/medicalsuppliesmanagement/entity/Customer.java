@@ -13,7 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Customer {
-
     public enum CustomerType {
         WHOLESALE, SUPPLIER, RETAIL // (sỉ, nhà cc, lẻ )
     }

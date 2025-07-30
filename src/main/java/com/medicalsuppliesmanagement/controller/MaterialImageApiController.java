@@ -4,7 +4,7 @@ import com.medicalsuppliesmanagement.entity.Material;
 import com.medicalsuppliesmanagement.entity.Material_Image;
 import com.medicalsuppliesmanagement.exception.ResourceNotFoundException;
 import com.medicalsuppliesmanagement.repository.IMaterialImageRepository;
-import com.medicalsuppliesmanagement.service.impl.IMaterialDetailService;
+import com.medicalsuppliesmanagement.service.impl.MaterialDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class MaterialImageApiController {
 
     @Autowired
-    private IMaterialDetailService materialDetailService;
+    private MaterialDetailService materialDetailService;
 
     @Autowired
     private IMaterialImageRepository materialImageRepository;
