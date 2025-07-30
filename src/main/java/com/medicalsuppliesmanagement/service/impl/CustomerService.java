@@ -1,18 +1,17 @@
 package com.medicalsuppliesmanagement.service.impl;
 
-
 import com.medicalsuppliesmanagement.dto.CustomerDto;
 import com.medicalsuppliesmanagement.entity.Customer;
 import com.medicalsuppliesmanagement.repository.ICustomerRepository;
 import com.medicalsuppliesmanagement.service.ICustomerService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class CustomerService implements ICustomerService {
 
-    private final ICustomerRepository customerRepository;
+    @Autowired
+    private ICustomerRepository customerRepository;
 
     @Override
     public CustomerDto getCustomerProfile(String username) {
@@ -54,5 +53,4 @@ public class CustomerService implements ICustomerService {
 
         customerRepository.save(customer);
     }
-
 }

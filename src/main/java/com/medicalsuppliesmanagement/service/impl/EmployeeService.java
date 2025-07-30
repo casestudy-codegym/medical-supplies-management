@@ -6,17 +6,19 @@ import com.medicalsuppliesmanagement.entity.Employee;
 import com.medicalsuppliesmanagement.repository.IEmployeeRepository;
 import com.medicalsuppliesmanagement.repository.ISalaryRepository;
 import com.medicalsuppliesmanagement.service.IEmployeeService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
 
 @Service
-@RequiredArgsConstructor
 public class EmployeeService implements IEmployeeService {
 
-    private final IEmployeeRepository employeeRepository;
-    private final ISalaryRepository salaryRepository;
+    @Autowired
+    private IEmployeeRepository employeeRepository;
+
+    @Autowired
+    private ISalaryRepository salaryRepository;
 
     @Override
     public EmployeeDto getEmployeeProfile(String username) {
@@ -26,6 +28,7 @@ public class EmployeeService implements IEmployeeService {
         EmployeeDto dto = new EmployeeDto();
         dto.setUsername(employee.getUser().getUsername());
         dto.setFullName(employee.getUser().getFullName());
+
         String avatarUrl = employee.getUser().getAvatarUrl();
         if (avatarUrl == null || avatarUrl.isBlank()) {
             dto.setAvatarUrl("https://www.w3schools.com/howto/img_avatar.png");
@@ -73,6 +76,7 @@ public class EmployeeService implements IEmployeeService {
         if (dto.getAvatarUrl() != null && !dto.getAvatarUrl().isBlank()) {
             employee.getUser().setAvatarUrl(dto.getAvatarUrl());
         }
+
         employeeRepository.save(employee);
     }
 }
