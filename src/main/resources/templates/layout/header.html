@@ -222,10 +222,10 @@
                 // Desktop behavior
                 const navItem = element.closest('.nav-item');
                 const dropdown = navItem.querySelector('.dropdown');
-                
+
                 // Check if dropdown is visible
                 const isVisible = dropdown.style.opacity === '1';
-                
+
                 // Close all other dropdowns first
                 document.querySelectorAll('.nav-item .dropdown').forEach(d => {
                     if (d !== dropdown) {
@@ -234,7 +234,7 @@
                         d.style.transform = 'translateY(-10px)';
                     }
                 });
-                
+
                 // Toggle current dropdown
                 if (isVisible) {
                     dropdown.style.opacity = '0';
@@ -259,7 +259,7 @@
                 // Desktop behavior for submenus - keep them open on click
                 const submenu = element.closest('.dropdown-submenu');
                 const dropdown = submenu.querySelector('.dropdown-sub');
-                
+
                 dropdown.style.opacity = '1';
                 dropdown.style.visibility = 'visible';
                 dropdown.style.transform = 'translateX(0)';
@@ -277,7 +277,7 @@
                         clickedOutside = false;
                     }
                 });
-                
+
                 // If clicked outside, close all dropdowns
                 if (clickedOutside) {
                     document.querySelectorAll('.dropdown').forEach(dropdown => {
