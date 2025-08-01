@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
 </head>
@@ -269,7 +269,7 @@
         document.addEventListener('click', function(event) {
             // Only handle outside clicks for desktop mode
             if (window.innerWidth > 768) {
-                // Check if click was outside any nav-item
+                // Check if the click was outside any nav-item
                 let clickedOutside = true;
                 document.querySelectorAll('.nav-item.has-dropdown').forEach(item => {
                     if (item.contains(event.target)) {
