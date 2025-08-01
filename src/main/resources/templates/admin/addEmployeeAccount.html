@@ -1,11 +1,153 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Thêm tài khoản nhân viên</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .error {
+            color: #dc3545;
+            font-size: 80%;
+            margin-top: 0.25rem;
+        }
+    </style>
 </head>
-<h1>Thêm tài khoản nhân viên</h1>
 <body>
+    <!-- Header -->
+    <div th:replace="~{layout/header :: header}"></div>
+    
+    <div class="container mt-4">
+        <div class="form-container">
+            <h2 class="form-title">Thêm thông tin tài khoản nhân viên</h2>
+            
+            <!-- Thông báo thành công hoặc lỗi -->
+            <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+            
+            <form th:action="@{/admin/add-employee-account}" method="post" th:object="${employeeDTO}">
+                <div class="row">
+                    <!-- Cột bên trái -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="username" class="form-label">Tên tài khoản</label>
+                            <input type="text" class="form-control" id="username" th:field="*{username}" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password" class="form-label">Mật khẩu</label>
+                            <input type="password" class="form-control" id="password" th:field="*{password}" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="role" class="form-label">Quyền</label>
+                            <select class="form-control" id="role" th:field="*{role}" th:classappend="${#fields.hasErrors('role')} ? 'is-invalid'" required>
+                                <option value="" selected disabled>-- Chọn quyền --</option>
+                                <option th:each="role : ${roles}" 
+                                        th:value="${role}" 
+                                        th:text="${role == T(com.medicalsuppliesmanagement.entity.UserAccount.Role).ACCOUNTANT ? 'Kế toán' : 
+                                                (role == T(com.medicalsuppliesmanagement.entity.UserAccount.Role).SALES ? 'Bán hàng' : 
+                                                (role == T(com.medicalsuppliesmanagement.entity.UserAccount.Role).ADMIN ? 'Quản trị' : role))}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+                        </div>
 
+                        <div class="form-group">
+                            <label for="employeeCode" class="form-label">Mã nhân viên</label>
+                            <input type="text" class="form-control" id="employeeCode" th:field="*{employeeCode}" th:classappend="${#fields.hasErrors('employeeCode')} ? 'is-invalid'" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('employeeCode')}" th:errors="*{employeeCode}"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="position" class="form-label">Chức vụ</label>
+                            <input type="text" class="form-control" id="position" th:field="*{position}" th:classappend="${#fields.hasErrors('position')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('position')}" th:errors="*{position}"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cột bên phải -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="fullName" class="form-label">Tên nhân viên</label>
+                            <input type="text" class="form-control" id="fullName" th:field="*{fullName}" th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="dateOfBirth" class="form-label">Ngày sinh</label>
+                            <input type="date" class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}" th:classappend="${#fields.hasErrors('dateOfBirth')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="gender" class="form-label">Giới tính</label>
+                            <select class="form-control" id="gender" th:field="*{gender}" th:classappend="${#fields.hasErrors('gender')} ? 'is-invalid'">
+                                <option value="" selected disabled>-- Chọn giới tính --</option>
+                                <option th:each="gender : ${genders}" 
+                                        th:value="${gender}" 
+                                        th:text="${gender == T(com.medicalsuppliesmanagement.entity.UserAccount.Gender).NAM ? 'Nam' : 'Nữ'}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="address" class="form-label">Địa chỉ</label>
+                            <input type="text" class="form-control" id="address" th:field="*{address}" th:classappend="${#fields.hasErrors('address')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Điện thoại</label>
+                            <input type="text" class="form-control" id="phone" th:field="*{phone}" th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary">Thêm</button>
+                    <a th:href="@{/}" class="btn btn-secondary">Trở về</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div th:replace="~{layout/footer :: footer}"></div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
