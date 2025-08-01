@@ -31,12 +31,12 @@ public class AuthController {
             // Có thể lấy thêm thông tin từ service nếu cần
             UserAccount user = authService.findByUsername(userDetails.getUsername())
                     .orElse(null);
-            
+
             if (user != null) {
                 model.addAttribute("user", user);
             }
         }
-        
+
         return "auth/loginSuccess";
     }
 }
