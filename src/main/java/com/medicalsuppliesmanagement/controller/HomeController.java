@@ -1,6 +1,4 @@
 package com.medicalsuppliesmanagement.controller;
-
-feature/header-footer
 import com.medicalsuppliesmanagement.entity.Category;
 import com.medicalsuppliesmanagement.entity.Material;
 import com.medicalsuppliesmanagement.service.CategoryService;
@@ -28,7 +26,7 @@ public class HomeController {
     @Autowired
     private MaterialService materialService;
 
-    @GetMapping("/")
+    @GetMapping("/material")
     public String home(Model model,
                        @RequestParam(defaultValue = "0") int page,
                        @RequestParam(required = false, name = "category") Long categoryId,
@@ -57,7 +55,7 @@ public class HomeController {
         return "material/list";
     }
 
-    @GetMapping("/category")
+    @GetMapping("/material/category")
     public String getByCategory(Model model,
                                 @RequestParam(defaultValue = "0") int page,
                                 @RequestParam(required = false, name = "category") Long id) {
@@ -90,22 +88,5 @@ public class HomeController {
             model.addAttribute("error", "Material not found");
             return "redirect:/";
         }
-    @Autowired
-    private CustomerService customerService;
-    @Autowired
-    private EmployeeService employeeService;
-
-    @GetMapping("/home")
-    public String showHomePage(Model model) {
-        long customerCount = customerService.countCustomers();
-        long employeeCount = employeeService.countEmployees();
-        model.addAttribute("employeeCount", employeeCount);
-        model.addAttribute("customerCount", customerCount);
-        return "home/homePage";
-    }
-
-    @GetMapping("/")
-    public String home() {
-        return "redirect:/home";
     }
 }

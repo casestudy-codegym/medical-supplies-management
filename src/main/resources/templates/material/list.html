@@ -21,7 +21,7 @@
                             TÌM KIẾM
                         </div>
                         <div class="card-body">
-                            <form th:action="@{/}" method="get">
+                            <form th:action="@{/material}" method="get">
                                 <div class="mb-3">
                                     <input type="text" class="form-control" name="search"
                                            th:value="${searchQuery}" placeholder="Tìm theo tên hoặc mô tả...">
@@ -51,7 +51,7 @@
                             DANH MỤC VẬT LIỆU
                         </div>
                         <div class="card-body p-0">
-                            <form th:action="@{/}" method="get">
+                            <form th:action="@{/material}" method="get">
                                 <input type="hidden" name="search" th:value="${searchQuery}">
                                 <input type="hidden" name="minPrice" th:value="${minPrice}">
                                 <input type="hidden" name="maxPrice" th:value="${maxPrice}">
@@ -96,7 +96,7 @@
                                     </strong>
                                 </span>
                             </div>
-                            <a th:href="@{/}" class="btn btn-outline-secondary btn-sm">
+                            <a th:href="@{/material}" class="btn btn-outline-secondary btn-sm">
                                 <i class="fas fa-times me-1"></i>Xóa bộ lọc
                             </a>
                         </div>
