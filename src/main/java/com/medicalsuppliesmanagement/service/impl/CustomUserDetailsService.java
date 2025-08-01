@@ -22,16 +22,21 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserAccount> userOptional = userRepository.findByUsername(username);
-        
+
         if (userOptional.isEmpty()) {
             throw new UsernameNotFoundException("Không tìm thấy người dùng: " + username);
         }
-        
+
         UserAccount user = userOptional.get();
-        
-        // Tạo quyền cho người dùng dựa trên vai trò (ROLE)
-        String role = "ROLE_USER"; // Mặc định là USER
-        
+
+        // Kiểm tra trạng thái tài khoản
+        if (user.getStatus() == null || !user.getStatus().equalsIgnoreCase("ACTIVE")) {
+            throw new UsernameNotFoundException("Tài khoản đã bị vô hiệu hóa hoặc không hợp lệ: " + username);
+        }
+
+        // Xác định vai trò người dùng
+        String role = "ROLE_USER"; // mặc định
+
         if (user.getRole() != null) {
             switch (user.getRole()) {
                 case ADMIN:
@@ -48,11 +53,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                     break;
             }
         }
-        
+
         return new User(
-            user.getUsername(),
-            user.getPassword(),
-            Collections.singletonList(new SimpleGrantedAuthority(role))
+                user.getUsername(),
+                user.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority(role))
         );
     }
-} 
+}

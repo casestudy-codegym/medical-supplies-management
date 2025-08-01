@@ -4,6 +4,7 @@ import com.medicalsuppliesmanagement.dto.EmployeeAccountDTO;
 import com.medicalsuppliesmanagement.entity.Employee;
 import com.medicalsuppliesmanagement.entity.UserAccount;
 import com.medicalsuppliesmanagement.service.IEmployeeService;
+import com.medicalsuppliesmanagement.util.EmailService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,6 +56,12 @@ public class AdminController {
             UserAccount userAccount = getUserAccount(employeeDTO);
 
             employeeService.addEmployeeWithAccount(employee, userAccount);
+            
+            // Gửi email thông tin tài khoản cho nhân viên mới
+            if (employeeDTO.getEmail() != null && !employeeDTO.getEmail().isEmpty()) {
+                EmailService.sendEmployeeAccountInfo(employeeDTO);
+            }
+
             redirectAttributes.addFlashAttribute("successMessage", "Thêm tài khoản nhân viên thành công!");
             return "redirect:/admin/add-employee-account";
         } catch (Exception e) {
