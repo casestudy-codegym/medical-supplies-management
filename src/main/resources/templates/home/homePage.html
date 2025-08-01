@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Header</title>
   <title>Trang chính - Hệ thống quản lý</title>
   <style>
     body {
@@ -66,7 +67,7 @@
 </head>
 <body>
 <!-- Include header fragment -->
-<div th:replace="~{layout/header :: header}"></div>
+<div th:insert="layout/header :: header"></div>
 
 <div class="content">
   <div class="welcome-card">
@@ -80,7 +81,7 @@
       <div class="stat-icon">
         <i class="fas fa-users"></i>
       </div>
-      <div class="stat-number">150</div>
+      <div class="stat-number" th:text="${employeeCount}"></div>
       <div class="stat-label">Nhân viên</div>
     </div>
 
@@ -88,7 +89,7 @@
       <div class="stat-icon">
         <i class="fas fa-user-friends"></i>
       </div>
-      <div class="stat-number">1,250</div>
+      <div class="stat-number" th:text="${customerCount}"></div>
       <div class="stat-label">Khách hàng</div>
     </div>
 
@@ -109,5 +110,7 @@
     </div>
   </div>
 </div>
+
+<!--<div th:insert="layout/footer :: footer"></div>-->
 </body>
 </html>

@@ -104,7 +104,8 @@ public class GlobalExceptionHandler {
         model.addAttribute("timestamp", formatTimestamp(LocalDateTime.now()));
         return "error/400";
     }
-    
+
+
     private String formatTimestamp(LocalDateTime dateTime) {
         return dateTime.format(DATE_TIME_FORMATTER);
     }
