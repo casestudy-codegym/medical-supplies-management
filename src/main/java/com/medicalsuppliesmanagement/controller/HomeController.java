@@ -1,5 +1,6 @@
 package com.medicalsuppliesmanagement.controller;
 
+feature/header-footer
 import com.medicalsuppliesmanagement.entity.Category;
 import com.medicalsuppliesmanagement.entity.Material;
 import com.medicalsuppliesmanagement.service.CategoryService;
@@ -7,6 +8,9 @@ import com.medicalsuppliesmanagement.service.MaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import com.medicalsuppliesmanagement.service.impl.CustomerService;
+import com.medicalsuppliesmanagement.service.impl.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -86,5 +90,22 @@ public class HomeController {
             model.addAttribute("error", "Material not found");
             return "redirect:/";
         }
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private EmployeeService employeeService;
+
+    @GetMapping("/home")
+    public String showHomePage(Model model) {
+        long customerCount = customerService.countCustomers();
+        long employeeCount = employeeService.countEmployees();
+        model.addAttribute("employeeCount", employeeCount);
+        model.addAttribute("customerCount", customerCount);
+        return "home/homePage";
+    }
+
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/home";
     }
 }
