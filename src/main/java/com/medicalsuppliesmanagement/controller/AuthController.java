@@ -26,12 +26,18 @@ public class AuthController {
 
     @GetMapping("/login-success")
     public String loginSuccess(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        // Spring Security đã xử lý xác thực và lưu thông tin người dùng
+        // Ta chỉ cần lấy thông tin chi tiết từ UserDetails nếu cần
         if (userDetails != null) {
-            UserAccount user = authService.findByUsername(userDetails.getUsername()).orElse(null);
+            // Có thể lấy thêm thông tin từ service nếu cần
+            UserAccount user = authService.findByUsername(userDetails.getUsername())
+                    .orElse(null);
+
             if (user != null) {
                 model.addAttribute("user", user);
             }
         }
+
         return "auth/loginSuccess";
     }
 

@@ -1,4 +1,4 @@
-package com.medicalsuppliesmanagement.service;
+package com.medicalsuppliesmanagement.service.impl;
 
 import com.medicalsuppliesmanagement.entity.Material;
 import com.medicalsuppliesmanagement.repository.IMaterialRepository;
