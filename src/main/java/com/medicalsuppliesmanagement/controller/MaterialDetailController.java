@@ -1,11 +1,10 @@
 package com.medicalsuppliesmanagement.controller;
 
 import com.medicalsuppliesmanagement.entity.Category;
-import com.medicalsuppliesmanagement.entity.Customer;
 import com.medicalsuppliesmanagement.entity.Material;
 import com.medicalsuppliesmanagement.repository.ICustomerRepository;
-import com.medicalsuppliesmanagement.service.CategoryService;
-import com.medicalsuppliesmanagement.service.MaterialService;
+import com.medicalsuppliesmanagement.service.impl.CategoryService;
+import com.medicalsuppliesmanagement.service.impl.MaterialService;
 import com.medicalsuppliesmanagement.service.impl.MaterialDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
