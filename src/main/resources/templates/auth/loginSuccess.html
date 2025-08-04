@@ -45,15 +45,21 @@
         <p class="mt-4">Bạn sẽ được chuyển hướng đến trang chủ trong <span id="countdown">3</span> giây...</p>
         
         <div class="mt-4">
-            <a href="/" class="btn btn-primary">Đến trang chủ ngay</a>
+            <a th:href="${#authorization.expression('hasRole(''CUSTOMER'')')} ? @{/material} : @{/}" class="btn btn-primary">
+                <span th:text="${#authorization.expression('hasRole(''CUSTOMER'')')} ? 'Đến trang sản phẩm ngay' : 'Đến trang chủ ngay'"></span>
+            </a>
         </div>
     </div>
 </div>
 
-<script>
+<script th:inline="javascript">
     // Đếm ngược và chuyển hướng
     let seconds = 3;
     const countdownElement = document.getElementById('countdown');
+    
+    // Xác định URL chuyển hướng dựa trên vai trò
+    const isCustomer = /*[[${#authorization.expression('hasRole(''CUSTOMER'')')}]]*/ false;
+    const redirectUrl = isCustomer ? '/material' : '/';
     
     const countdownInterval = setInterval(function() {
         seconds--;
@@ -61,7 +67,7 @@
         
         if (seconds <= 0) {
             clearInterval(countdownInterval);
-            window.location.href = '/';
+            window.location.href = redirectUrl;
         }
     }, 1000);
 </script>
