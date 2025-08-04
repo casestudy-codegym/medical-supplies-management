@@ -1,6 +1,5 @@
 package com.medicalsuppliesmanagement.repository;
 
-
 import com.medicalsuppliesmanagement.entity.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,4 +17,6 @@ public interface ICustomerRepository extends JpaRepository<Customer, Long> {
     Page<Customer> findByNameContainingIgnoreCaseAndType(String keyword, Customer.CustomerType type, Pageable pageable);
 
     Page<Customer> findByType(Customer.CustomerType customerType, PageRequest pageable);
+
+    Optional<Customer> findByUser_Username(String username);
 }

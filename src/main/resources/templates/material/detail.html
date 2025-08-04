@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${material?.name}">Chi tiết vật tư</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #293A58;
+        }
+        .product-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+            background: white;
+        }
+        .btn-buy {
+            background-color: #293A58;
+            color: white;
+        }
+        .btn-buy:hover {
+            background-color: #1f2c43;
+            color: white;
+        }
+        .carousel-inner {
+            width: 100%;
+            height: 400px; /* hoặc tùy mày muốn */
+        }
+
+        .carousel-item {
+            height: 100%;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* giữ nguyên ảnh, không crop */
+            background: #fff;    /* khoảng trắng nền */
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+<div th:replace="~{layout/header :: header}"></div>
+
+<div class="container mt-5 mb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a th:href="@{/}">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a th:href="@{/material/}">Danh sách vật tư</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${material?.name}"></li>
+        </ol>
+    </nav>
+</div>
+
+<div class="container mb-5 product-card">
+    <div class="row justify-content-center">
+        <div class="col-lg-12 ">
+            <div class="row">
+                <!-- Slider nhiều ảnh -->
+                <div class="col-md-6 mb-3  d-md-0  d-flex justify-content-center align-items-center flex-column  ">
+                    <div id="materialCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div th:each="imgUrl, iterStat : ${material.allImages}"
+                                 th:class="${iterStat.index == 0} ? 'carousel-item active' : 'carousel-item'">
+                                <img th:src="${imgUrl}" class="d-block w-100 rounded " alt="Hình vật tư">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#materialCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#materialCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon "></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Thông tin vật tư -->
+                <div class="col-md-6">
+                    <h2><strong th:text="${material?.name}"></strong></h2>
+                    <p class="text-muted">Mã: <strong th:text="${material?.materialCode}"></strong></p>
+                    <h4 class="mt-3">
+                        Giá: <strong><span th:text="${#numbers.formatDecimal(material?.price, 0, 'COMMA', 0, 'POINT')}"></span> VND</strong>
+                    </h4>
+                    <p>Số lượng còn: <strong th:text="${material?.quantity}"></strong></p>
+                    <p>Đơn vị: <strong th:text="${material?.unit}"></strong></p>
+                    <p>Hết hạn:
+                        <strong><span th:text="${material?.expirationDate != null ? #temporals.format(material.expirationDate, 'dd/MM/yyyy') : 'Không có'}"></span></strong>
+                    </p>
+                    <hr>
+                    <h5><strong>Nhà cung cấp</strong></h5>
+                    <p><strong th:text="${material.supplier?.name ?: 'Chưa có'}"></strong></p>
+                    <p>Địa chỉ: <strong th:text="${material.supplier?.address ?: ''}"></strong></p>
+                    <p>Điện thoại: <strong th:text="${material.supplier?.phoneNumber ?: ''}"></strong></p>
+
+                    <div class="d-flex gap-2 mt-3 align-items-center">
+                        <input type="number" min="1" value="1" class="form-control w-25" id="quantity">
+                        <button class="btn btn-buy flex-fill">Mua hàng trực tiếp</button>
+                        <button class="btn btn-buy flex-fill">Thêm vào giỏ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5 mb-5 product-card">
+    <h3><strong>Thông tin chi tiết</strong></h3>
+    <p th:text="${material?.description ?: 'Chưa có mô tả'}"></p>
+    <ul class="list-group mt-3">
+        <li class="list-group-item">
+            <strong>Mã vật tư:</strong> <span th:text="${material?.materialCode}"></span>
+        </li>
+        <li class="list-group-item">
+            <strong>Danh mục:</strong> <span th:text="${material?.category?.name ?: 'Chưa có'}"></span>
+        </li>
+        <li class="list-group-item">
+            <strong>Nhà cung cấp:</strong> <span th:text="${material?.supplier?.name ?: 'Chưa có'}"></span>
+        </li>
+        <li class="list-group-item">
+            <strong>Số lượng tồn kho:</strong> <span th:text="${material?.quantity}"></span>
+        </li>
+        <li class="list-group-item">
+            <strong>Đơn vị:</strong> <span th:text="${material?.unit}"></span>
+        </li>
+        <li class="list-group-item">
+            <strong>Giá bán:</strong>
+            <span th:text="${#numbers.formatDecimal(material?.price, 0, 'COMMA', 0, 'POINT')}"></span> VND
+        </li>
+        <li class="list-group-item">
+            <strong>Hạn sử dụng:</strong>
+            <span th:text="${material?.expirationDate != null ? #temporals.format(material.expirationDate, 'dd/MM/yyyy') : 'Không có'}"></span>
+        </li>
+    </ul>
+</div>
+
+<!--<form th:action="@{/api/materials/{id}/images(id=${material.id})}" method="post" class="container mb-5">-->
+<!--    <input type="text" name="imageUrl" class="form-control w-50 d-inline-block" placeholder="Nhập URL ảnh">-->
+<!--    <button type="submit" class="btn btn-buy">Thêm ảnh</button>-->
+<!--</form>-->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

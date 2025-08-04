@@ -1,6 +1,7 @@
 package com.medicalsuppliesmanagement.controller;
 
 import com.medicalsuppliesmanagement.entity.Employee;
+import com.medicalsuppliesmanagement.dto.EmployeeDto;
 import com.medicalsuppliesmanagement.entity.UserAccount;
 import com.medicalsuppliesmanagement.service.IEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import jakarta.validation.Valid;
 
+import jakarta.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -21,7 +23,7 @@ import java.util.List;
 public class EmployeeController {
 
     @Autowired
-    private IEmployeeService service;
+    private IEmployeeService employeeService;
 
     @GetMapping
     public String listEmployees(@RequestParam(defaultValue = "0") int page,
@@ -30,60 +32,39 @@ public class EmployeeController {
                                 @RequestParam(required = false) String position,
                                 Model model) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Employee> employeePage = service.searchEmployees(
+        Page<Employee> employeePage = employeeService.searchEmployees(
                 keyword != null ? keyword.trim() : null,
-                position != null && !position.equals("ALL") ? position : null,
+                position != null && !"ALL".equals(position) ? position : null,
                 pageable
         );
 
         model.addAttribute("employeePage", employeePage);
         model.addAttribute("keyword", keyword);
         model.addAttribute("position", position);
-        model.addAttribute("positions", service.getAllDistinctPositions()); // để render dropdown
+        model.addAttribute("positions", employeeService.getAllDistinctPositions());
         return "employee/list";
     }
-
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         Employee employee = new Employee();
-        employee.setUserAccount(new UserAccount());
+        employee.setUser(new UserAccount());
         model.addAttribute("employee", employee);
         return "employee/add";
     }
 
     @PostMapping("/save")
     public String save(@Valid @ModelAttribute("employee") Employee employee,
-                       BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+                       BindingResult result,
+                       Model model,
+                       RedirectAttributes redirectAttributes) {
 
-        // Kiểm tra validation errors
         if (result.hasErrors()) {
             return "employee/add";
         }
 
-        // Kiểm tra các trường bắt buộc
-        if (employee.getUserAccount().getUsername() == null || employee.getUserAccount().getUsername().trim().isEmpty()) {
-            model.addAttribute("error", "Tên đăng nhập không được để trống");
-            return "employee/add";
-        }
-
-        if (employee.getUserAccount().getPassword() == null || employee.getUserAccount().getPassword().trim().isEmpty()) {
-            model.addAttribute("error", "Mật khẩu không được để trống");
-            return "employee/add";
-        }
-
-        if (employee.getEmployeeCode() == null || employee.getEmployeeCode().trim().isEmpty()) {
-            model.addAttribute("error", "Mã nhân viên không được để trống");
-            return "employee/add";
-        }
-
-        if (employee.getUserAccount().getFullName() == null || employee.getUserAccount().getFullName().trim().isEmpty()) {
-            model.addAttribute("error", "Họ tên không được để trống");
-            return "employee/add";
-        }
-
         try {
-            service.addEmployeeWithAccount(employee, employee.getUserAccount());
+            employeeService.addEmployeeWithAccount(employee, employee.getUser());
             redirectAttributes.addFlashAttribute("success", "Thêm nhân viên thành công!");
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
@@ -96,10 +77,36 @@ public class EmployeeController {
         return "redirect:/employees";
     }
 
+    @GetMapping("/profile")
+    public String showEmployeeProfile(Model model, Principal principal) {
+        String username = principal.getName();
+        EmployeeDto dto = employeeService.getEmployeeProfile(username);
+        model.addAttribute("employee", dto);
+        return "employee/profile";
+    }
+
+    @GetMapping("/edit")
+    public String showEditForm(Model model, Principal principal) {
+        String username = principal.getName();
+        EmployeeDto dto = employeeService.getEmployeeProfile(username);
+        model.addAttribute("employee", dto);
+        return "employee/edit";
+    }
+
+    @PostMapping("/edit")
+    public String updateEmployee(@ModelAttribute("employee") EmployeeDto dto,
+                                 RedirectAttributes redirect,
+                                 Principal principal) {
+        dto.setUsername(principal.getName());
+        employeeService.updateEmployee(dto);
+        redirect.addFlashAttribute("success", "Cập nhật thông tin thành công!");
+        return "redirect:/employees/profile";
+    }
+
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         try {
-            Employee employee = service.findById(id)
+            Employee employee = employeeService.findById(id)
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên với ID: " + id));
             model.addAttribute("employee", employee);
             return "employee/update";
@@ -112,31 +119,29 @@ public class EmployeeController {
     @PostMapping("/edit/{id}")
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute("employee") Employee employee,
-                         BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+                         BindingResult result,
+                         Model model,
+                         RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "employee/update";
         }
 
         try {
-            // Đảm bảo ID được set đúng
             employee.setEmployeeId(id);
 
-            // Lấy employee hiện tại để giữ lại một số thông tin
-            Employee existingEmployee = service.findById(id)
+            Employee existingEmployee = employeeService.findById(id)
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên"));
 
-            // Giữ lại thông tin quan trọng từ user account hiện tại
-            UserAccount existingUser = existingEmployee.getUserAccount();
-            UserAccount updatedUser = employee.getUserAccount();
+            UserAccount existingUser = existingEmployee.getUser();
+            UserAccount updatedUser = employee.getUser();
 
-            // Giữ nguyên username và password
             updatedUser.setUserId(existingUser.getUserId());
             updatedUser.setUsername(existingUser.getUsername());
             updatedUser.setPassword(existingUser.getPassword());
             updatedUser.setStatus(existingUser.getStatus());
             updatedUser.setCreatedAt(existingUser.getCreatedAt());
 
-            service.updateEmployee(employee);
+            employeeService.updateEmployee(employee);
             redirectAttributes.addFlashAttribute("success", "Cập nhật nhân viên thành công!");
         } catch (Exception e) {
             model.addAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
@@ -149,7 +154,7 @@ public class EmployeeController {
     @PostMapping("/delete/{id}")
     public String deleteEmployee(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
-           service.deleteById(id);
+            employeeService.deleteById(id);
             redirectAttributes.addFlashAttribute("success", "Đã xóa nhân viên thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Không thể xóa nhân viên này. Vui lòng kiểm tra ràng buộc dữ liệu!");
@@ -157,7 +162,6 @@ public class EmployeeController {
         return "redirect:/employees";
     }
 
-    // Xóa nhiều nhân viên
     @PostMapping("/delete-multiple")
     public String deleteMultipleEmployees(@RequestParam(value = "selectedIds", required = false) List<Long> selectedIds,
                                           RedirectAttributes redirectAttributes) {
@@ -167,7 +171,7 @@ public class EmployeeController {
         }
 
         try {
-           service.deleteMultiple(selectedIds);
+            employeeService.deleteMultiple(selectedIds);
             redirectAttributes.addFlashAttribute("success", "Đã xóa " + selectedIds.size() + " nhân viên!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Không thể xóa một số nhân viên. Vui lòng kiểm tra ràng buộc dữ liệu!");
