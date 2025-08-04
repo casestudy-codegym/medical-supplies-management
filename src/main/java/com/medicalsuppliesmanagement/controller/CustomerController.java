@@ -1,7 +1,7 @@
 package com.medicalsuppliesmanagement.controller;
 
 import com.medicalsuppliesmanagement.entity.Customer;
-import com.medicalsuppliesmanagement.service.impl.CustomerService;
+import com.medicalsuppliesmanagement.service.ICustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,7 @@ import java.util.List;
 public class CustomerController {
 
     @Autowired
-    private CustomerService customerService;
+    private ICustomerService customerService;
 
     // 📄 Danh sách khách hàng với phân trang và tìm kiếm
     @GetMapping("/customers")

@@ -1,6 +1,6 @@
 package com.medicalsuppliesmanagement.controller;
 
-import com.medicalsuppliesmanagement.service.impl.CustomerService;
+import com.medicalsuppliesmanagement.service.ICustomerService;
 import com.medicalsuppliesmanagement.service.impl.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
     @Autowired
-    private CustomerService customerService;
+    private ICustomerService customerService;
     @Autowired
     private EmployeeService employeeService;
 
