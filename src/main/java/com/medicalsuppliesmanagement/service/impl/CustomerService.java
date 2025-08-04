@@ -2,6 +2,7 @@ package com.medicalsuppliesmanagement.service.impl;
 
 import com.medicalsuppliesmanagement.entity.Customer;
 import com.medicalsuppliesmanagement.repository.ICustomerRepository;
+import com.medicalsuppliesmanagement.service.ICustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 
 @Service
-public class CustomerService implements com.medicalsuppliesmanagement.service.ICustomerService {
+public class CustomerService implements ICustomerService {
 
     @Autowired
     private ICustomerRepository customerRepository;
