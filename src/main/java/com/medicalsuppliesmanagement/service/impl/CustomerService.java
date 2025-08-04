@@ -17,8 +17,6 @@ public interface CustomerService {
     Optional<Customer> findByCustomerCode(String code);
     Page<Customer> searchCustomers(String keyword, String type, int page, int size);
     void deleteByIds(List<Long> ids);
-
     List<Customer> getAllCustomers();
-
     long countCustomers();
 } 

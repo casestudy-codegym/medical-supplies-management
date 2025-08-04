@@ -98,24 +98,10 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
-    public Page<Employee> findAll(Pageable pageable) {
-        return employeeRepository.findAll(pageable);
-    }
-
-    @Override
-    public Page<Employee> searchByFullName(String keyword, Pageable pageable) {
-        return employeeRepository.findByUserAccountFullNameContainingIgnoreCase(keyword, pageable);
-    }
-
-    @Override
     public Page<Employee> searchEmployees(String keyword, String position, Pageable pageable) {
         return employeeRepository.searchEmployees(keyword, position, pageable);
     }
 
-    @Override
-    public Optional<Employee> findByEmployeeCode(String employeeCode) {
-        return  employeeRepository.findByEmployeeCode(employeeCode);
-    }
 
     @Override
     public List<String> getAllDistinctPositions() {
@@ -127,10 +113,6 @@ public class EmployeeService implements IEmployeeService {
         return employeeRepository.findById(id);
     }
 
-    @Override
-    public Employee save(Employee employee) {
-        return employeeRepository.save(employee);
-    }
 
     @Override
     @Transactional
@@ -159,12 +141,6 @@ public class EmployeeService implements IEmployeeService {
             userRepository.deleteById(userId);
         }
     }
-
-    @Override
-    public boolean existsByEmployeeCode(String employeeCode) {
-        return  employeeRepository.existsByEmployeeCode(employeeCode);
-    }
-
     @Override
     public long countEmployees() {
         return employeeRepository.count();
