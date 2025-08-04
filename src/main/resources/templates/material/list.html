@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>Danh Mục Vật Liệu Y Tế</title>
@@ -8,7 +9,10 @@
     <link rel="stylesheet" th:href="@{/css/suppliesList.css}">
 </head>
 <body>
-<div th:replace="~{layout/header :: header}"></div>
+<!-- Sử dụng homeHeader cho CUSTOMER và header thông thường cho các role khác -->
+<div sec:authorize="hasRole('CUSTOMER')" th:replace="~{layout/userHeader :: header}"></div>
+<div sec:authorize="!hasRole('CUSTOMER')" th:replace="~{layout/header :: header}"></div>
+
 <div class="content-wrapper">
     <div class="container-fluid">
         <div class="row">
@@ -157,7 +161,15 @@
                                                     <i class="fas fa-eye me-1"></i>
                                                     Xem
                                                 </a>
-                                                <button class="btn btn-sm btn-outline-gradient">
+                                                <form th:action="@{/cart/add}" method="post" sec:authorize="hasRole('CUSTOMER')" class="d-inline">
+                                                    <input type="hidden" name="materialId" th:value="${material.id}">
+                                                    <input type="hidden" name="quantity" value="1">
+                                                    <button type="submit" class="btn btn-sm btn-outline-gradient">
+                                                        <i class="fas fa-cart-plus me-1"></i>
+                                                        Thêm vào giỏ
+                                                    </button>
+                                                </form>
+                                                <button sec:authorize="!hasRole('CUSTOMER')" class="btn btn-sm btn-outline-gradient">
                                                     <i class="fas fa-cart-plus me-1"></i>
                                                     Thêm
                                                 </button>
