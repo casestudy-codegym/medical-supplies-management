@@ -18,7 +18,7 @@ import java.util.Optional;
 
 
 @Controller
-@RequestMapping("/material/")
+@RequestMapping("/material")
 public class MaterialDetailController {
 
     @Autowired
@@ -46,7 +46,7 @@ public class MaterialDetailController {
         }
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public String home(Model model,
                        @RequestParam(defaultValue = "0") int page,
                        @RequestParam(required = false, name = "category") Long categoryId,
