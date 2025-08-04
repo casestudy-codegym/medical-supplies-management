@@ -1,6 +1,8 @@
 package com.medicalsuppliesmanagement.service;
 
 
+
+import com.medicalsuppliesmanagement.dto.CustomerDto;
 import com.medicalsuppliesmanagement.entity.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,4 +21,6 @@ public interface ICustomerService {
     void deleteByIds(List<Long> ids);
     List<Customer> getAllCustomers();
     long countCustomers();
-} 
+    CustomerDto getCustomerProfile(String username);
+    void updateCustomer(CustomerDto dto);
+}

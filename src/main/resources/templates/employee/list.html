@@ -260,7 +260,6 @@
 
     <!-- Bulk Actions -->
     <form method="post" th:action="@{/employees/delete-multiple}" id="bulkDeleteForm">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf}"/>
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
             <div class="text-muted">
                 <small th:if="${employeePage != null and employeePage.content != null}">
@@ -301,20 +300,20 @@
                         <span class="badge bg-light text-dark border" th:text="${e.employeeCode}"></span>
                     </td>
                     <td>
-                        <div class="fw-semibold" th:text="${e.userAccount.fullName}"></div>
+                        <div class="fw-semibold" th:text="${e.user.fullName}"></div>
                     </td>
-                    <td class="d-md-table-cell" th:text="${e.userAccount.dateOfBirth != null ? #temporals.format(e.userAccount.dateOfBirth, 'dd/MM/yyyy') : '-'}"></td>
+                    <td class="d-md-table-cell" th:text="${e.user.dateOfBirth != null ? #temporals.format(e.user.dateOfBirth, 'dd/MM/yyyy') : '-'}"></td>
                     <td class="d-md-table-cell">
-                        <span class="badge bg-info" th:if="${e.userAccount.gender != null and e.userAccount.gender.name() == 'NAM'}">Nam</span>
-                        <span class="badge bg-warning" th:if="${e.userAccount.gender != null and e.userAccount.gender.name() == 'NU'}">Nữ</span>
-                        <span class="badge bg-secondary" th:if="${e.userAccount.gender == null}">-</span>
+                        <span class="badge bg-info" th:if="${e.user.gender != null and e.user.gender.name() == 'NAM'}">Nam</span>
+                        <span class="badge bg-warning" th:if="${e.user.gender != null and e.user.gender.name() == 'NU'}">Nữ</span>
+                        <span class="badge bg-secondary" th:if="${e.user.gender == null}">-</span>
                     </td>
-                    <td class="d-md-table-cell" th:text="${e.userAccount.address ?: '-'}"></td>
+                    <td class="d-md-table-cell" th:text="${e.user.address ?: '-'}"></td>
                     <td class="d-md-table-cell">
-                        <span class="text-decoration-none" th:text="${e.userAccount.phone ?: '-'}"></span>
+                        <span class="text-decoration-none" th:text="${e.user.phone ?: '-'}"></span>
                     </td>
                     <td class="d-md-table-cell">
-                        <span class="text-decoration-none" th:text="${e.userAccount.email ?: '-'}"></span>
+                        <span class="text-decoration-none" th:text="${e.user.email ?: '-'}"></span>
                     </td>
                     <td>
                         <span class="badge bg-primary" th:text="${e.position ?: '-'}"></span>
@@ -322,7 +321,7 @@
                     <td>
                         <div class="d-flex gap-1">
                             <button type="button" class="btn btn-sm btn-outline-danger delete-btn"
-                                    th:attr="data-id=${e.employeeId},data-name=${e.userAccount.fullName}"
+                                    th:attr="data-id=${e.employeeId},data-name=${e.user.fullName}"
                                     title="Xóa nhân viên">
                                 <i class="bi bi-trash3"></i>
                             </button>
@@ -358,40 +357,40 @@
                     <span class="badge bg-primary" th:text="${e.position ?: '-'}"></span>
                 </div>
                 <div class="mobile-card-body">
-                    <div class="fw-bold mb-2" th:text="${e.userAccount.fullName}"></div>
+                    <div class="fw-bold mb-2" th:text="${e.user.fullName}"></div>
 
                     <div class="employee-info-row">
                         <span class="info-label">Ngày sinh:</span>
-                        <span class="info-value" th:text="${e.userAccount.dateOfBirth != null ? #temporals.format(e.userAccount.dateOfBirth, 'dd/MM/yyyy') : '-'}"></span>
+                        <span class="info-value" th:text="${e.user.dateOfBirth != null ? #temporals.format(e.user.dateOfBirth, 'dd/MM/yyyy') : '-'}"></span>
                     </div>
 
                     <div class="employee-info-row">
                         <span class="info-label">Giới tính:</span>
                         <span class="info-value">
-                            <span class="badge bg-info" th:if="${e.userAccount.gender != null and e.userAccount.gender.name() == 'NAM'}">Nam</span>
-                            <span class="badge bg-warning" th:if="${e.userAccount.gender != null and e.userAccount.gender.name() == 'NU'}">Nữ</span>
-                            <span class="badge bg-secondary" th:if="${e.userAccount.gender == null}">-</span>
+                            <span class="badge bg-info" th:if="${e.user.gender != null and e.user.gender.name() == 'NAM'}">Nam</span>
+                            <span class="badge bg-warning" th:if="${e.user.gender != null and e.user.gender.name() == 'NU'}">Nữ</span>
+                            <span class="badge bg-secondary" th:if="${e.user.gender == null}">-</span>
                         </span>
                     </div>
 
                     <div class="employee-info-row">
                         <span class="info-label">Địa chỉ:</span>
-                        <span class="info-value" th:text="${e.userAccount.address ?: '-'}"></span>
+                        <span class="info-value" th:text="${e.user.address ?: '-'}"></span>
                     </div>
 
                     <div class="employee-info-row">
                         <span class="info-label">SĐT:</span>
-                        <span class="info-value" th:text="${e.userAccount.phone ?: '-'}"></span>
+                        <span class="info-value" th:text="${e.user.phone ?: '-'}"></span>
                     </div>
 
                     <div class="employee-info-row">
                         <span class="info-label">Email:</span>
-                        <span class="info-value" th:text="${e.userAccount.email ?: '-'}"></span>
+                        <span class="info-value" th:text="${e.user.email ?: '-'}"></span>
                     </div>
                 </div>
                 <div class="mobile-card-actions">
                     <button type="button" class="btn btn-sm btn-outline-danger delete-btn flex-fill"
-                            th:attr="data-id=${e.employeeId},data-name=${e.userAccount.fullName}">
+                            th:attr="data-id=${e.employeeId},data-name=${e.user.fullName}">
                         <i class="bi bi-trash3 me-1"></i>Xóa
                     </button>
                     <a th:href="@{'/employees/edit/' + ${e.employeeId}}"
