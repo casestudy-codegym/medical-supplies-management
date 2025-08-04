@@ -20,7 +20,7 @@
                             TÌM KIẾM
                         </div>
                         <div class="card-body">
-                            <form th:action="@{/material/}" method="get">
+                            <form th:action="@{/material}" method="get">
                                 <div class="mb-3">
                                     <input type="text" class="form-control" name="search"
                                            th:value="${searchQuery != null ? searchQuery : ''}" placeholder="Tìm theo tên hoặc mô tả...">

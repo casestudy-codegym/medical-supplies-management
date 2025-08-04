@@ -42,7 +42,7 @@ public class MaterialDetailController {
             return "material/detail";
         } catch (Exception e) {
             model.addAttribute("error", "Error loading material details");
-            return "redirect:/material/";
+            return "redirect:/material";
         }
     }
 
