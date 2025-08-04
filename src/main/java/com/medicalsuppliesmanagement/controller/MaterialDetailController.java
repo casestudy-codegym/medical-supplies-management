@@ -18,25 +18,32 @@ import java.util.Optional;
 
 
 @Controller
-@RequestMapping("/material")
+@RequestMapping("/material/")
 public class MaterialDetailController {
+
     @Autowired
     private ICustomerRepository customerService;
-
     @Autowired
     private MaterialDetailService materialDetailService;
-
     @Autowired
     private CategoryService categoryService;
-
     @Autowired
     private MaterialService materialService;
 
     @GetMapping("/{id}")
     public String getMaterialDetailPageById(@PathVariable Long id, Model model) {
-        Material material = materialDetailService.getMaterialById(id);
-        model.addAttribute("material", material);
-        return "material/detail";
+        try {
+            Material material = materialDetailService.getMaterialById(id);
+            if (material == null) {
+                model.addAttribute("error", "Material not found");
+                return "redirect:/material/";
+            }
+            model.addAttribute("material", material);
+            return "material/detail";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error loading material details");
+            return "redirect:/material/";
+        }
     }
 
     @GetMapping("/")
@@ -46,62 +53,73 @@ public class MaterialDetailController {
                        @RequestParam(required = false) String search,
                        @RequestParam(required = false) Double minPrice,
                        @RequestParam(required = false) Double maxPrice) {
+        try {
+            List<Category> categories = categoryService.findAll();
+            model.addAttribute("categories", categories);
+            model.addAttribute("searchQuery", search);
+            model.addAttribute("minPrice", minPrice);
+            model.addAttribute("maxPrice", maxPrice);
 
-        List<Category> categories = categoryService.findAll();
-        model.addAttribute("categories", categories);
-        model.addAttribute("searchQuery", search);
-        model.addAttribute("minPrice", minPrice);
-        model.addAttribute("maxPrice", maxPrice);
+            Page<Material> materialList = materialService.findWithFilters(
+                    categoryId, search, minPrice, maxPrice, PageRequest.of(page, 8)
+            );
+            model.addAttribute("materialList", materialList);
 
-        Page<Material> materialList = materialService.findWithFilters(
-                categoryId, search, minPrice, maxPrice, PageRequest.of(page, 8)
-        );
-        model.addAttribute("materialList", materialList);
-
-        if (categoryId != null) {
-            Optional<Category> category = categoryService.findById(categoryId);
-            if (category.isPresent()) {
-                model.addAttribute("categoryWord", category.get());
+            if (categoryId != null) {
+                Optional<Category> category = categoryService.findById(categoryId);
+                category.ifPresent(cat -> model.addAttribute("categoryWord", cat));
             }
-        }
 
-        return "material/list";
+            return "material/list";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error loading materials");
+            return "error/500";
+        }
     }
 
     @GetMapping("/category")
     public String getByCategory(Model model,
                                 @RequestParam(defaultValue = "0") int page,
                                 @RequestParam(required = false, name = "category") Long id) {
+        try {
+            if (id == null) {
+                return "redirect:/material/";
+            }
 
-        Page<Material> materialList = materialService.findByCategoryIdOrderByNameAsc(id, PageRequest.of(page, 8));
-        List<Category> categories = categoryService.findAll();
+            Page<Material> materialList = materialService.findByCategoryIdOrderByNameAsc(id, PageRequest.of(page, 8));
+            List<Category> categories = categoryService.findAll();
+            model.addAttribute("categories", categories);
+            model.addAttribute("materialList", materialList);
 
-        model.addAttribute("categories", categories);
-        model.addAttribute("materialList", materialList);
-
-        Optional<Category> category = categoryService.findById(id);
-        if (category.isPresent()) {
-            model.addAttribute("categoryWord", category.get());
-        } else {
-            model.addAttribute("error", "Category not found");
-            return "redirect:/";
+            Optional<Category> category = categoryService.findById(id);
+            if (category.isPresent()) {
+                model.addAttribute("categoryWord", category.get());
+                return "material/list";
+            } else {
+                model.addAttribute("error", "Category not found");
+                return "redirect:/material/";
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "Error loading category materials");
+            return "redirect:/material/";
         }
-
-        return "material/list";
     }
 
     @GetMapping("/materials")
-    public String getMaterialDetail(Model model,
-                                    @RequestParam Long id) {
-        Optional<Material> material = materialService.findById(id);
-        if (material.isPresent()) {
-            model.addAttribute("material", material.get());
-            return "material/detail";
-        } else {
-            model.addAttribute("error", "Material not found");
-            return "redirect:/";
+    public String getMaterialDetail(Model model, @RequestParam Long id) {
+        try {
+            Optional<Material> material = materialService.findById(id);
+            if (material.isPresent()) {
+                model.addAttribute("material", material.get());
+                return "material/detail";
+            } else {
+                model.addAttribute("error", "Material not found");
+                return "redirect:/material/";
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "Error loading material details");
+            return "redirect:/material/";
         }
     }
-
 }
 

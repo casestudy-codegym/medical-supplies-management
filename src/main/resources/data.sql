@@ -17,7 +17,7 @@ INSERT INTO employees (id, employee_code, position, user_id) VALUES
 (3, 'EMP003', 'Nhân viên bán hàng', 3);
 
 -- Dữ liệu mẫu cho bảng customers
-INSERT INTO customers (customer_id, customer_code, name, type, address, phone, email, user_id) VALUES
+INSERT INTO customers (id, customer_code, name, type, address, phone, email, id) VALUES
 (1, 'CUS001', 'Khách hàng 1', 'RETAIL', 'Đà Nẵng', '0987654324', 'customer1@gmail.com', 4),
 (2, 'CUS002', 'Khách hàng 2', 'WHOLESALE', 'Hải Phòng', '0987654325', 'customer2@gmail.com', 5),
 (3, 'CUS003', 'Công ty ABC', 'WHOLESALE', 'Hà Nội', '0987654326', 'company@gmail.com', null),
