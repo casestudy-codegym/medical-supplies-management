@@ -21,7 +21,7 @@ import java.util.List;
 public class EmployeeController {
 
     @Autowired
-    private IEmployeeService service;
+    private IEmployeeService employeeService;
 
     @GetMapping
     public String listEmployees(@RequestParam(defaultValue = "0") int page,
@@ -30,7 +30,7 @@ public class EmployeeController {
                                 @RequestParam(required = false) String position,
                                 Model model) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Employee> employeePage = service.searchEmployees(
+        Page<Employee> employeePage = employeeService.searchEmployees(
                 keyword != null ? keyword.trim() : null,
                 position != null && !position.equals("ALL") ? position : null,
                 pageable
@@ -39,7 +39,7 @@ public class EmployeeController {
         model.addAttribute("employeePage", employeePage);
         model.addAttribute("keyword", keyword);
         model.addAttribute("position", position);
-        model.addAttribute("positions", service.getAllDistinctPositions()); // để render dropdown
+        model.addAttribute("positions", employeeService.getAllDistinctPositions()); // để render dropdown
         return "employee/list";
     }
 
@@ -83,7 +83,7 @@ public class EmployeeController {
         }
 
         try {
-            service.addEmployeeWithAccount(employee, employee.getUserAccount());
+            employeeService.addEmployeeWithAccount(employee, employee.getUserAccount());
             redirectAttributes.addFlashAttribute("success", "Thêm nhân viên thành công!");
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
@@ -99,7 +99,7 @@ public class EmployeeController {
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         try {
-            Employee employee = service.findById(id)
+            Employee employee = employeeService.findById(id)
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên với ID: " + id));
             model.addAttribute("employee", employee);
             return "employee/update";
@@ -122,7 +122,7 @@ public class EmployeeController {
             employee.setEmployeeId(id);
 
             // Lấy employee hiện tại để giữ lại một số thông tin
-            Employee existingEmployee = service.findById(id)
+            Employee existingEmployee = employeeService.findById(id)
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên"));
 
             // Giữ lại thông tin quan trọng từ user account hiện tại
@@ -136,7 +136,7 @@ public class EmployeeController {
             updatedUser.setStatus(existingUser.getStatus());
             updatedUser.setCreatedAt(existingUser.getCreatedAt());
 
-            service.updateEmployee(employee);
+            employeeService.updateEmployee(employee);
             redirectAttributes.addFlashAttribute("success", "Cập nhật nhân viên thành công!");
         } catch (Exception e) {
             model.addAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
@@ -149,7 +149,7 @@ public class EmployeeController {
     @PostMapping("/delete/{id}")
     public String deleteEmployee(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
-           service.deleteById(id);
+           employeeService.deleteById(id);
             redirectAttributes.addFlashAttribute("success", "Đã xóa nhân viên thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Không thể xóa nhân viên này. Vui lòng kiểm tra ràng buộc dữ liệu!");
@@ -167,7 +167,7 @@ public class EmployeeController {
         }
 
         try {
-           service.deleteMultiple(selectedIds);
+           employeeService.deleteMultiple(selectedIds);
             redirectAttributes.addFlashAttribute("success", "Đã xóa " + selectedIds.size() + " nhân viên!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Không thể xóa một số nhân viên. Vui lòng kiểm tra ràng buộc dữ liệu!");
