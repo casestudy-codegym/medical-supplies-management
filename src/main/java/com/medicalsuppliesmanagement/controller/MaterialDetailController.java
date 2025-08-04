@@ -18,7 +18,7 @@ import java.util.Optional;
 
 
 @Controller
-@RequestMapping("/material/")
+@RequestMapping("/material")
 public class MaterialDetailController {
 
     @Autowired
@@ -46,7 +46,7 @@ public class MaterialDetailController {
         }
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public String home(Model model,
                        @RequestParam(defaultValue = "0") int page,
                        @RequestParam(required = false, name = "category") Long categoryId,
@@ -101,23 +101,6 @@ public class MaterialDetailController {
             }
         } catch (Exception e) {
             model.addAttribute("error", "Error loading category materials");
-            return "redirect:/material/";
-        }
-    }
-
-    @GetMapping("/materials")
-    public String getMaterialDetail(Model model, @RequestParam Long id) {
-        try {
-            Optional<Material> material = materialService.findById(id);
-            if (material.isPresent()) {
-                model.addAttribute("material", material.get());
-                return "material/detail";
-            } else {
-                model.addAttribute("error", "Material not found");
-                return "redirect:/material/";
-            }
-        } catch (Exception e) {
-            model.addAttribute("error", "Error loading material details");
             return "redirect:/material/";
         }
     }
