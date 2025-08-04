@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/management")
@@ -80,22 +81,75 @@ public class CustomerController {
     }
 
     // ✏️ Hiển thị form chỉnh sửa hồ sơ khách hàng
-    @GetMapping("/edit")
-    public String showEditForm(Model model, Principal principal) {
-        String username = principal.getName();
-        CustomerDto dto = customerService.getCustomerProfile(username);
-        model.addAttribute("customer", dto);
-        return "customer/edit";
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        Customer customer = customerService.findById(id);
+        if (customer == null) {
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy khách hàng!");
+            return "redirect:/management/customers";
+        }
+
+        model.addAttribute("customer", customer);
+        model.addAttribute("action", "Chỉnh sửa khách hàng");
+        return "customer/update";
     }
 
+
     // 💾 Cập nhật thông tin hồ sơ khách hàng
-    @PostMapping("/edit")
-    public String updateCustomer(@ModelAttribute("customer") CustomerDto dto,
-                                 Principal principal,
-                                 RedirectAttributes redirect) {
-        dto.setUsername(principal.getName());
-        customerService.updateCustomer(dto);
-        redirect.addFlashAttribute("success", "Cập nhật thông tin thành công!");
-        return "redirect:/management/profile";
+    @PostMapping("/edit/{id}")
+    public String updateCustomer(@PathVariable Long id, @Valid @ModelAttribute Customer customer,
+                                 BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            model.addAttribute("action", "Chỉnh sửa khách hàng");
+            return "customer/update";
+        }
+
+        // Kiểm tra trùng mã khách hàng
+        if (customerService.findByCustomerCode(customer.getCustomerCode()).isPresent() &&
+                !customer.getCustomerId().equals(id)) {
+            result.rejectValue("customerCode", "error.customer", "Mã khách hàng đã tồn tại");
+            model.addAttribute("action", "Chỉnh sửa khách hàng");
+            return "customer/update";
+        }
+
+        customer.setCustomerId(id);
+        customerService.update(customer);
+        redirectAttributes.addFlashAttribute("success", "Cập nhật khách hàng thành công!");
+        return "redirect:/management/customers";
+    }
+
+    // 🗑️ Xóa khách hàng đơn lẻ
+    @PostMapping("/customers/delete/{id}")
+    public String deleteCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            Customer customer = customerService.findById(id);
+            if (customer == null) {
+                redirectAttributes.addFlashAttribute("error", "Không tìm thấy khách hàng cần xóa!");
+                return "redirect:/management/customers";
+            }
+
+            customerService.deleteById(id);
+            redirectAttributes.addFlashAttribute("success", "Đã xóa khách hàng: " + customer.getName());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Không thể xóa khách hàng. Có thể khách hàng đang được sử dụng trong hệ thống!");
+        }
+        return "redirect:/management/customers";
+    }
+
+    // 🗑️ Xóa nhiều khách hàng
+    @PostMapping("/customers/delete-multiple")
+    public String deleteSelected(@RequestParam(value = "selectedIds", required = false) List<Long> ids,
+                                 RedirectAttributes redirectAttributes) {
+        if (ids == null || ids.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng chọn ít nhất một khách hàng để xóa!");
+            return "redirect:/management/customers";
+        }
+        try {
+            customerService.deleteByIds(ids);
+            redirectAttributes.addFlashAttribute("success", "Đã xóa thành công " + ids.size() + " khách hàng!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Không thể xóa một số khách hàng. Có thể chúng đang được sử dụng trong hệ thống!");
+        }
+        return "redirect:/management/customers";
     }
 }
