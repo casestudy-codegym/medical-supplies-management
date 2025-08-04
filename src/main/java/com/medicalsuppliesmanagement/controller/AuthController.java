@@ -41,6 +41,12 @@ public class AuthController {
         return "auth/loginSuccess";
     }
 
+    @GetMapping("/logout")
+    public String logout(@AuthenticationPrincipal UserDetails userDetails) {
+        // Xử lý đăng xuất nếu cần
+        return "redirect:/auth/login";
+    }
+
     @GetMapping("/change-password")
     public String showChangePasswordForm(Model model) {
         model.addAttribute("changePasswordDto", new ChangePasswordDto());
