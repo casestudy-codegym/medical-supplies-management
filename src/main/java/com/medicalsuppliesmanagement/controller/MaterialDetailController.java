@@ -76,33 +76,5 @@ public class MaterialDetailController {
             return "error/500";
         }
     }
-
-    @GetMapping("/category")
-    public String getByCategory(Model model,
-                                @RequestParam(defaultValue = "0") int page,
-                                @RequestParam(required = false, name = "category") Long id) {
-        try {
-            if (id == null) {
-                return "redirect:/material/";
-            }
-
-            Page<Material> materialList = materialService.findByCategoryIdOrderByNameAsc(id, PageRequest.of(page, 8));
-            List<Category> categories = categoryService.findAll();
-            model.addAttribute("categories", categories);
-            model.addAttribute("materialList", materialList);
-
-            Optional<Category> category = categoryService.findById(id);
-            if (category.isPresent()) {
-                model.addAttribute("categoryWord", category.get());
-                return "material/list";
-            } else {
-                model.addAttribute("error", "Category not found");
-                return "redirect:/material/";
-            }
-        } catch (Exception e) {
-            model.addAttribute("error", "Error loading category materials");
-            return "redirect:/material/";
-        }
-    }
 }
 
