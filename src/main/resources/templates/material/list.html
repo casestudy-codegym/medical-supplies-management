@@ -133,11 +133,8 @@
                                         Nhà cung cấp: <strong th:text="${material.supplier?.name}">Supplier Name</strong>
                                     </div>
 
-                                    <div th:if="${material.expirationDate != null}"
-                                         th:class="${#temporals.isAfter(#temporals.createNow(), material.expirationDate) ? 'expiration-date expired' :
-                                           (#temporals.daysBetween(#temporals.createNow(), material.expirationDate) <= 30 ? 'expiration-date warning' : 'expiration-date safe')}">
-                                        <i class="fas fa-calendar-alt me-1"></i>
-                                        HSD: <span th:text="${#temporals.format(material.expirationDate, 'dd/MM/yyyy')}">01/01/2024</span>
+                                    <div class="expiration-date" th:if="${material.expirationDate != null}">
+                                        Hạn sử dụng: <strong th:text="${#temporals.format(material.expirationDate, 'dd/MM/yyyy')}">01/01/2023</strong>
                                     </div>
 
                                     <div class="product-price" th:if="${material.price != null}">

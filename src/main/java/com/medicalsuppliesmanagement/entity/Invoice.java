@@ -27,13 +27,13 @@ public class Invoice {
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
+
     @ManyToOne
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "employee_id", referencedColumnName = "id")
     private Employee employee;
-    
+
     @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
     
     @Column(name = "total_amount")

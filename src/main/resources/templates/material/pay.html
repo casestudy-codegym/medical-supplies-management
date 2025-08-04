@@ -1,0 +1,79 @@
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header text-white" style="background-color:#293A58;">
+            <h3 class="mb-0">Hóa đơn của bạn</h3>
+        </div>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <div class="card-body p-4">
+            <p><strong>Mã hóa đơn:</strong>
+                <span th:text="${invoice.invoiceCode}"></span>
+            </p>
+            <p><strong>Khách hàng:</strong>
+                <span th:text="${invoice.customer != null ? invoice.customer.name : 'Khách lẻ'}"></span>
+            </p>
+            <p><strong>Ngày tạo:</strong>
+                <span th:text="${#temporals.format(invoice.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
+            </p>
+
+            <form th:action="@{/invoice/confirmPayment}" method="post" class="mt-4">
+                <input type="hidden" name="invoiceId" th:value="${invoice.id}" />
+
+                <table class="table table-hover table-bordered align-middle text-center">
+                    <thead style="background-color:#293A58; color:white;">
+                    <tr>
+                        <th>Tên vật tư</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${invoice.invoiceItems}">
+                        <td th:text="${item.material.name}"></td>
+                        <td th:text="${item.quantity}"></td>
+                        <td th:text="${#numbers.formatDecimal(item.unitPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                        <td th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="text-end">
+                    <p class="mb-1">Giảm giá:
+                        <span th:text="${#numbers.formatDecimal(invoice.discountAmount,0,'COMMA',0,'POINT')} + ' đ'"></span>
+                    </p>
+                    <p class="mb-1">Thuế VAT:
+                        <span th:text="${#numbers.formatDecimal(invoice.vatAmount,0,'COMMA',0,'POINT')} + ' đ'"></span>
+                    </p>
+                    <h4 class="fw-bold" style="color:#293A58;">
+                        Tổng cộng:
+                        <span th:text="${#numbers.formatDecimal(invoice.totalAmount,0,'COMMA',0,'POINT')} + ' đ'"></span>
+                    </h4>
+                </div>
+
+                <!-- Chọn phương thức thanh toán -->
+                <div class="mt-4">
+                    <h5 style="color:#293A58;">Chọn phương thức thanh toán:</h5>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="paymentMethod" value="CASH" checked>
+                        <label class="form-check-label">Tiền mặt</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="paymentMethod" value="BANK" data-bs-toggle="collapse" data-bs-target="#qrCollapse">
+                        <label class="form-check-label">Chuyển khoản</label>
+                    </div>
+
+                    <div class="collapse mt-2" id="qrCollapse">
+                        <img src="https://qr.sepay.vn/img?acc=0010000000355&bank=Vietcombank" alt="QR Code" width="200">
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn text-white px-4" style="background-color:#293A58;">Hoàn tất thanh toán</button>
+                    <a href="/" class="btn btn-outline-secondary px-4">Tiếp tục mua sắm</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

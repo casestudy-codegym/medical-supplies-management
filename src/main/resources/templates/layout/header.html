@@ -152,6 +152,15 @@
                 </a>
             </div>
         </nav>
+        <div class="d-flex align-items-center">
+            <!-- Các menu khác của bạn -->
+            <a th:href="@{/cart}" class="position-relative ms-4">
+                <i class="fas fa-shopping-cart fa-2x"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                      th:text="${cartCount != null ? cartCount : 0}">0</span>
+            </a>
+        </div>
+
     </header>
 
     <script>

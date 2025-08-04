@@ -19,6 +19,7 @@ public class MedicalSupply {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "supply_id")
     private Long supplyId;
 
     @Column(name = "supply_code", unique = true, length = 20)
@@ -52,4 +53,8 @@ public class MedicalSupply {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    public void setId(Long id) {
+        this.supplyId = id;
+    }
 }

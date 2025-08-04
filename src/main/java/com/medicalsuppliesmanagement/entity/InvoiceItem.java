@@ -22,11 +22,12 @@ public class InvoiceItem {
     @ManyToOne
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
-    
+
     @ManyToOne
-    @JoinColumn(name = "material_id")
+    @JoinColumn(name = "material_id", referencedColumnName = "supply_id")
     private MedicalSupply material;
-    
+
+
     @Column(name = "quantity")
     private Integer quantity;
     
@@ -38,4 +39,11 @@ public class InvoiceItem {
     
     @Column(name = "note", columnDefinition = "TEXT")
     private String note;
+
+    public void setPrice(Double price) {
+        this.unitPrice = price;
+        if (this.quantity != null) {
+            this.totalPrice = this.unitPrice * this.quantity;
+        }
+    }
 }

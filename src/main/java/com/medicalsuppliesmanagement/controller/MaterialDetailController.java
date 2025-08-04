@@ -1,21 +1,20 @@
 package com.medicalsuppliesmanagement.controller;
 
 import com.medicalsuppliesmanagement.entity.Category;
+import com.medicalsuppliesmanagement.entity.Invoice;
 import com.medicalsuppliesmanagement.entity.Material;
 import com.medicalsuppliesmanagement.repository.ICustomerRepository;
-import com.medicalsuppliesmanagement.service.impl.CategoryService;
-import com.medicalsuppliesmanagement.service.impl.MaterialService;
-import com.medicalsuppliesmanagement.service.impl.MaterialDetailService;
+import com.medicalsuppliesmanagement.service.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
-
 
 @Controller
 @RequestMapping("/material")
@@ -31,6 +30,11 @@ public class MaterialDetailController {
 
     @Autowired
     private MaterialService materialService;
+
+    @Autowired
+    private InvoiceService invoiceService;
+    @Autowired
+    private InvoiceItemService invoiceItemService;
 
     @GetMapping("/{id}")
     public String getMaterialDetailPageById(@PathVariable Long id, Model model) {
@@ -103,5 +107,33 @@ public class MaterialDetailController {
         }
     }
 
+    @PostMapping("/materials/{id}/buy")
+    public String buyOrAddToCart(@PathVariable Long id,
+                                 @RequestParam int quantity,
+                                 @RequestParam String action,
+                                 RedirectAttributes redirectAttributes) {
+        switch (action) {
+            case "buy" -> {
+                Invoice invoice = invoiceService.createInvoiceForMaterial(id, quantity);
+                redirectAttributes.addFlashAttribute("message", "Mua vật tư y tế thành công!");
+                return "redirect:/material/invoice/" + invoice.getId(); // <-- chuyển sang xem chi tiết
+            }
+            case "addToCart" -> {
+                invoiceItemService.addToCart(id, quantity);
+                redirectAttributes.addFlashAttribute("message", "Thêm vào giỏ hàng thành công!");
+                return "redirect:/material/" + id;
+            }
+            default -> throw new IllegalArgumentException("Invalid action: " + action);
+        }
+    }
+    @GetMapping("/invoice/{id}")
+    public String viewInvoice(@PathVariable Long id, Model model) {
+        Invoice invoice = invoiceService.getInvoiceById(id);
+        model.addAttribute("invoice", invoice);
+        return "material/pay";
+    }
+
 }
+
+
 

@@ -97,4 +97,12 @@ public class Material {
             image.setMaterial(null);
         }
     }
+    public MedicalSupply toMedicalSupply() {
+        MedicalSupply medicalSupply = new MedicalSupply();
+        medicalSupply.setId(this.getId());
+        medicalSupply.setName(this.getName());
+        medicalSupply.setPrice(this.getPrice());
+        // Map other fields as needed
+        return medicalSupply;
+    }
 }
