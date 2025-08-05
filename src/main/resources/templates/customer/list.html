@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Quản lý khách hàng</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -40,7 +41,7 @@
 
         .search-form {
             background: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             margin-bottom: 20px;
@@ -51,11 +52,134 @@
             color: #293A58;
             margin-bottom: 5px;
         }
+
+        /* Mobile responsive styles */
+        @media (max-width: 768px) {
+            .container-fluid h2 {
+                font-size: 1.5rem;
+            }
+
+            .search-form {
+                padding: 10px;
+            }
+
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+
+            .btn-sm {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+            }
+
+            .badge {
+                font-size: 0.7rem;
+            }
+
+            /* Mobile table adjustments */
+            .table td, .table th {
+                padding: 0.5rem 0.25rem;
+                vertical-align: middle;
+            }
+
+            /* Hide less important columns on mobile */
+            .table .d-md-table-cell {
+                display: none !important;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .search-form {
+                padding: 20px;
+            }
+
+            .d-md-table-cell {
+                display: table-cell !important;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 576px) {
+            .container-fluid h2 {
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
+            }
+
+            .search-form .row {
+                gap: 0.5rem;
+            }
+
+            .btn {
+                font-size: 0.875rem;
+            }
+
+            .modal-dialog {
+                margin: 0.5rem;
+            }
+
+            .table-responsive {
+                font-size: 0.8rem;
+            }
+
+            /* Stack buttons vertically on very small screens */
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .action-buttons .btn {
+                width: 100%;
+                font-size: 0.75rem;
+                padding: 0.25rem;
+            }
+        }
+
+        /* Large screens optimization */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1400px;
+            }
+        }
+
+        /* Custom mobile card view for table data */
+        @media (max-width: 768px) {
+            .mobile-card {
+                display: block;
+                background: white;
+                border: 1px solid #dee2e6;
+                border-radius: 8px;
+                margin-bottom: 1rem;
+                padding: 1rem;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            .mobile-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 0.5rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 1px solid #eee;
+            }
+
+            .mobile-card-body {
+                font-size: 0.875rem;
+            }
+
+            .mobile-card-actions {
+                margin-top: 0.75rem;
+                padding-top: 0.75rem;
+                border-top: 1px solid #eee;
+                display: flex;
+                gap: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
 <div th:replace="~{layout/header :: header}"></div>
-<div class="container-fluid text-center my-4">
+<div class="container-fluid text-center my-3 my-md-4">
     <h2 class="fw-bold" style="color: #293A58;">QUẢN LÝ KHÁCH HÀNG</h2>
 </div>
 
@@ -71,11 +195,12 @@
         <span th:text="${error}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
+
     <!-- Enhanced Search Form -->
     <div class="search-form">
         <form method="get" th:action="@{/management/customers}">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-4">
+            <div class="row g-2 g-md-3 align-items-end">
+                <div class="col-12 col-md-4">
                     <label for="keyword" class="form-label">
                         <i class="bi bi-search me-1"></i>Tìm theo tên
                     </label>
@@ -83,7 +208,7 @@
                            th:value="${keyword}" placeholder="Nhập tên khách hàng...">
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-12 col-md-3">
                     <label for="type" class="form-label">
                         <i class="bi bi-person-badge me-1"></i>Loại khách hàng
                     </label>
@@ -95,18 +220,18 @@
                     </select>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-12 col-md-3">
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary px-4">
+                        <button type="submit" class="btn btn-primary flex-fill">
                             <i class="bi bi-search me-1"></i>Tìm kiếm
                         </button>
-                        <a href="/management/customers" class="btn btn-outline-secondary px-3" title="Xóa bộ lọc">
+                        <a href="/management/customers" class="btn btn-outline-secondary" title="Xóa bộ lọc">
                             <i class="bi bi-arrow-clockwise"></i>
                         </a>
                     </div>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-12 col-md-2">
                     <a th:href="@{/management/new}" class="btn btn-success w-100">
                         <i class="bi bi-plus-circle me-1"></i>Thêm mới
                     </a>
@@ -117,16 +242,19 @@
 
     <!-- Bulk Actions -->
     <form method="post" th:action="@{/management/customers/delete-multiple}" id="bulkDeleteForm">
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
             <div class="text-muted">
                 <small th:if="${customers != null}">
                     Hiển thị <strong th:text="${#lists.size(customers)}"></strong> khách hàng
                 </small>
             </div>
+            <button type="button" class="btn btn-danger btn-sm" id="bulkDeleteBtn">
+                <i class="bi bi-trash me-1"></i>Xóa đã chọn
+            </button>
         </div>
 
-        <!-- Table -->
-        <div class="table-responsive">
+        <!-- Desktop Table View -->
+        <div class="table-responsive d-none d-md-block">
             <table class="table table-bordered align-middle bg-white rounded-3 overflow-hidden">
                 <thead class="table-dark">
                 <tr>
@@ -136,18 +264,17 @@
                     <th>Mã KH</th>
                     <th>Tên</th>
                     <th>Loại</th>
-                    <th>Địa chỉ</th>
-                    <th>SĐT</th>
-                    <th>Email</th>
-                    <th>Xóa</th>
-                    <th>Sửa</th>
+                    <th class="d-md-table-cell">Địa chỉ</th>
+                    <th class="d-md-table-cell">SĐT</th>
+                    <th class="d-md-table-cell">Email</th>
+                    <th>Thao tác</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="customer : ${customers}">
                     <td>
                         <input type="checkbox" name="selectedIds" th:value="${customer.customerId}"
-                               class="selectBox form-check-input"/>
+                               class="selectBox form-check-input" th:id="'desktop-' + ${customer.customerId}"/>
                     </td>
                     <td>
                         <span class="badge bg-light text-dark border" th:text="${customer.customerCode}"></span>
@@ -156,33 +283,29 @@
                         <div class="fw-semibold" th:text="${customer.name}"></div>
                     </td>
                     <td>
-                  <span class="badge"
-                        th:classappend="${customer.type.name() == 'WHOLESALE' ? 'bg-primary'
-                       : (customer.type.name() == 'SUPPLIER' ? 'bg-warning' : 'bg-info')}"
-                        th:text="${customer.typeVN}">
-                  </span>
+                        <span class="badge bg-primary" th:if="${customer.type.name() == 'WHOLESALE'}">Khách sỉ</span>
+                        <span class="badge bg-warning" th:if="${customer.type.name() == 'SUPPLIER'}">Nhà cung cấp</span>
+                        <span class="badge bg-info" th:if="${customer.type.name() == 'RETAIL'}">Khách lẻ</span>
                     </td>
-                    <td th:text="${customer.address}"></td>
-                    <td>
-                        <a class="text-decoration-none"
-                           th:text="${customer.phone}"></a>
+                    <td class="d-md-table-cell" th:text="${customer.address}"></td>
+                    <td class="d-md-table-cell">
+                        <a class="text-decoration-none" th:text="${customer.phone}"></a>
                     </td>
-                    <td>
-                        <a class="text-decoration-none"
-                           th:text="${customer.email}"></a>
+                    <td class="d-md-table-cell">
+                        <a class="text-decoration-none" th:text="${customer.email}"></a>
                     </td>
                     <td>
+                        <div class="d-flex gap-1">
                             <button type="button" class="btn btn-sm btn-outline-danger delete-btn"
                                     th:attr="data-id=${customer.customerId},data-name=${customer.name}"
                                     title="Xóa khách hàng">
-                                <i class="bi bi-trash3"></i>Xóa
+                                <i class="bi bi-trash3"></i>
                             </button>
-                    </td>
-                    <td>
                             <a th:href="@{'/management/edit/' + ${customer.customerId}}"
                                class="btn btn-sm btn-outline-warning" title="Sửa thông tin">
-                                <i class="bi bi-pencil-square"></i>Sửa
+                                <i class="bi bi-pencil-square"></i>
                             </a>
+                        </div>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(customers)}">
@@ -197,14 +320,58 @@
                 </tbody>
             </table>
         </div>
-        <button type="button" class="btn btn-danger" id="bulkDeleteBtn">
-            <i class="bi bi-trash me-1"></i>Xóa đã chọn
-        </button>
+
+        <!-- Mobile Card View -->
+        <div class="d-md-none" th:if="${!#lists.isEmpty(customers)}">
+            <div th:each="customer : ${customers}" class="mobile-card">
+                <div class="mobile-card-header">
+                    <div>
+                        <!-- Checkbox chỉ hiển thị trên mobile, không được submit -->
+                        <input type="checkbox" th:value="${customer.customerId}"
+                               class="selectBox form-check-input me-2" th:id="'mobile-' + ${customer.customerId}" data-mobile-only="true"/>
+                        <span class="badge bg-light text-dark border" th:text="${customer.customerCode}"></span>
+                    </div>
+                    <span class="badge"
+                          th:classappend="${customer.type.name() == 'WHOLESALE' ? 'bg-primary'
+                                 : (customer.type.name() == 'SUPPLIER' ? 'bg-warning' : 'bg-info')}"
+                          th:text="${customer.type.name() == 'WHOLESALE' ? 'Bán sỉ'
+                          : (customer.type.name() == 'SUPPLIER' ? 'Nhà cung cấp' : 'Bán lẻ')}">
+                    </span>
+                </div>
+                <div class="mobile-card-body">
+                    <div class="fw-bold mb-2" th:text="${customer.name}"></div>
+                    <div class="mb-1"><small class="text-muted">Địa chỉ:</small> <span th:text="${customer.address}"></span></div>
+                    <div class="mb-1"><small class="text-muted">SĐT:</small> <span th:text="${customer.phone}"></span></div>
+                    <div class="mb-1"><small class="text-muted">Email:</small> <span th:text="${customer.email}"></span></div>
+                </div>
+                <div class="mobile-card-actions">
+                    <button type="button" class="btn btn-sm btn-outline-danger delete-btn flex-fill"
+                            th:attr="data-id=${customer.customerId},data-name=${customer.name}">
+                        <i class="bi bi-trash3 me-1"></i>Xóa
+                    </button>
+                    <a th:href="@{'/management/edit/' + ${customer.customerId}}"
+                       class="btn btn-sm btn-outline-warning flex-fill">
+                        <i class="bi bi-pencil-square me-1"></i>Sửa
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Empty State -->
+        <div class="d-md-none text-center py-5" th:if="${#lists.isEmpty(customers)}">
+            <div class="text-muted">
+                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                <p class="mb-0">Không tìm thấy khách hàng nào</p>
+                <small>Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</small>
+            </div>
+        </div>
+
+        <!-- Hidden inputs để submit - được tạo động bởi JavaScript -->
+        <div id="hiddenInputsContainer"></div>
     </form>
 
     <!-- Pagination -->
     <nav th:if="${totalPages > 1}" class="mt-4">
-        <ul class="pagination justify-content-center">
+        <ul class="pagination justify-content-center flex-wrap">
             <li class="page-item" th:if="${currentPage > 0}">
                 <a class="page-link"
                    th:href="@{/management/customers(page=${currentPage - 1}, keyword=${keyword}, type=${type})}">
@@ -241,7 +408,7 @@
                         aria-label="Đóng"></button>
             </div>
 
-            <div class="modal-body text-center px-5 py-4">
+            <div class="modal-body text-center px-3 px-md-5 py-4">
                 <div class="mb-3">
                     <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
                          style="width: 70px; height: 70px; background-color: rgba(41, 58, 88, 0.1);">
@@ -258,7 +425,7 @@
                 </div>
             </div>
 
-            <div class="modal-footer border-0 px-5 pb-4 pt-0">
+            <div class="modal-footer border-0 px-3 px-md-5 pb-4 pt-0">
                 <form id="deleteForm" method="post" action="#" class="w-100">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf}"/>
                     <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
@@ -290,7 +457,7 @@
                         aria-label="Đóng"></button>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body px-3 px-md-4">
                 <div id="noSelectionMessage" class="text-center" style="display: none;">
                     <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
                          style="width: 60px; height: 60px;">
@@ -307,7 +474,7 @@
                     </div>
                     <h6 class="text-dark mb-2">Xác nhận xóa khách hàng</h6>
                     <p class="mb-3">Bạn đang chuẩn bị xóa <span class="badge bg-danger fs-6 px-3 py-2"
-                                                                id="selectedCount">0</span> khách hàng</p>
+                                                                id="selectedCount"></span> khách hàng</p>
                     <div class="alert alert-danger border-0 py-3" style="background-color: #f8d7da;">
                         <div class="d-flex align-items-center justify-content-center">
                             <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
@@ -319,13 +486,13 @@
                 </div>
             </div>
 
-            <div class="modal-footer border-0">
+            <div class="modal-footer border-0 px-3 px-md-4">
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center w-100">
                     <button type="button" class="btn btn-light border px-4 py-2" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle me-1"></i>Hủy bỏ
                     </button>
-                    <button type="button" class="btn btn-danger px-4 py-2" id="confirmBulkDelete"
-                            style="display: none;">
+                    <button type="button" class="btn  px-4 py-2" id="confirmBulkDelete"
+                            style="display: none;background-color: #293a58; color: white;">
                         <i class="bi bi-trash3-fill me-1"></i>Xóa tất cả
                     </button>
                 </div>
@@ -333,7 +500,6 @@
         </div>
     </div>
 </div>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const deleteButtons = document.querySelectorAll('.delete-btn');
@@ -354,10 +520,59 @@
             });
         });
 
+        // Function to sync checkboxes between desktop and mobile views
+        function syncCheckboxes(sourceCheckbox) {
+            const customerId = sourceCheckbox.value;
+            const isChecked = sourceCheckbox.checked;
+
+            // Sync all checkboxes with the same customer ID
+            document.querySelectorAll(`.selectBox[value="${customerId}"]`).forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        }
+
+        // Add event listeners to all checkboxes for syncing
+        document.querySelectorAll('.selectBox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                syncCheckboxes(this);
+            });
+        });
+
+        // Function to get selected unique customer IDs
+        function getSelectedCustomerIds() {
+            const selectedIds = new Set();
+
+            // Chỉ lấy từ desktop checkboxes (có name="selectedIds")
+            document.querySelectorAll('input[name="selectedIds"]:checked').forEach(checkbox => {
+                selectedIds.add(checkbox.value);
+            });
+
+            return Array.from(selectedIds);
+        }
+
+        // Function to create hidden inputs for form submission
+        function createHiddenInputs(selectedIds) {
+            const container = document.getElementById('hiddenInputsContainer');
+            // Clear existing hidden inputs
+            container.innerHTML = '';
+
+            // Create hidden input for each selected ID
+            selectedIds.forEach(id => {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'selectedIds';
+                hiddenInput.value = id;
+                container.appendChild(hiddenInput);
+            });
+        }
+
         // Xử lý nút xóa nhiều
         document.getElementById('bulkDeleteBtn').addEventListener('click', function () {
-            const selectedCheckboxes = document.querySelectorAll('.selectBox:checked');
-            const selectedCount = selectedCheckboxes.length;
+            const selectedIds = getSelectedCustomerIds();
+            const selectedCount = selectedIds.length;
+
+            console.log('Selected customer IDs:', selectedIds);
+            console.log('Count:', selectedCount);
 
             document.getElementById('noSelectionMessage').style.display = 'none';
             document.getElementById('confirmMessage').style.display = 'none';
@@ -369,6 +584,9 @@
                 document.getElementById('selectedCount').textContent = selectedCount;
                 document.getElementById('confirmMessage').style.display = 'block';
                 document.getElementById('confirmBulkDelete').style.display = 'inline-block';
+
+                // Tạo hidden inputs cho form submission
+                createHiddenInputs(selectedIds);
             }
 
             bulkDeleteModal.show();
@@ -376,14 +594,27 @@
 
         // Xác nhận xóa nhiều
         document.getElementById('confirmBulkDelete').addEventListener('click', function () {
+            // Loại bỏ tất cả checkbox visible để tránh trùng lặp
+            document.querySelectorAll('input[name="selectedIds"]:not([type="hidden"])').forEach(checkbox => {
+                checkbox.removeAttribute('name');
+            });
+
             document.getElementById('bulkDeleteForm').submit();
         });
-    });
 
-    // Select all checkbox
-    document.getElementById('selectAll').addEventListener('change', function () {
-        const checked = this.checked;
-        document.querySelectorAll('.selectBox').forEach(cb => cb.checked = checked);
+        // Select all checkbox - handle both desktop and mobile
+        const selectAllDesktop = document.getElementById('selectAll');
+        if (selectAllDesktop) {
+            selectAllDesktop.addEventListener('change', function () {
+                const checked = this.checked;
+                console.log('Select All clicked, checked:', checked);
+
+                // Set all checkboxes
+                document.querySelectorAll('.selectBox').forEach(checkbox => {
+                    checkbox.checked = checked;
+                });
+            });
+        }
     });
 </script>
 </body>
