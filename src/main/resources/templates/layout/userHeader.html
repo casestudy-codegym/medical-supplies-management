@@ -69,13 +69,7 @@
                         <a class="nav-link fw-bold" th:href="@{/about}">GIỚI THIỆU</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle fw-bold" href="#" data-bs-toggle="dropdown">SẢN PHẨM</a>
-                        <ul class="dropdown-menu">
-                            <div th:each="category: ${categories}">
-                                <li><a class="dropdown-item" th:href="@{/category/{id}(id=${category.id})}"
-                                       th:text="${category.name}">PHÂN LOẠI</a></li>
-                            </div>
-                        </ul>
+                        <a class="nav-link fw-bold" th:href="@{/material}">SẢN PHẨM</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link fw-bold" th:href="@{/chung-chi}">CHỨNG CHỈ CHẤT LƯỢNG</a>
