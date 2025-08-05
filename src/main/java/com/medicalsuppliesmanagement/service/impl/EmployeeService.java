@@ -11,8 +11,13 @@ import com.medicalsuppliesmanagement.service.IEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class EmployeeService implements IEmployeeService {
@@ -91,14 +96,6 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public Employee addEmployeeWithAccount(Employee employee, UserAccount userAccount) {
-        if (userRepository.existsByUsername(userAccount.getUsername())) {
-            throw new IllegalArgumentException("Tên tài khoản đã tồn tại");
-        }
-
-        if (userAccount.getPassword() == null || userAccount.getPassword().isEmpty()) {
-            throw new IllegalArgumentException("Mật khẩu không được để trống");
-        }
-
         if (employeeRepository.existsByEmployeeCode(employee.getEmployeeCode())) {
             throw new IllegalArgumentException("Mã nhân viên " + employee.getEmployeeCode() + " đã tồn tại");
         }
@@ -106,8 +103,83 @@ public class EmployeeService implements IEmployeeService {
         userAccount.setPassword(passwordEncoder.encode(userAccount.getPassword()));
         userAccount.setStatus(UserAccount.Status.ACTIVE.toString());
         UserAccount savedAccount = userRepository.save(userAccount);
+
         employee.setUser(savedAccount);
+        return employeeRepository.save(employee);
+    }
+
+    @Override
+    @Transactional
+    public Employee updateEmployee(Employee employee) {
+        Employee existingEmployee = employeeRepository.findById(employee.getEmployeeId())
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy nhân viên"));
+
+        if (!existingEmployee.getEmployeeCode().equals(employee.getEmployeeCode()) &&
+                employeeRepository.existsByEmployeeCode(employee.getEmployeeCode())) {
+            throw new IllegalArgumentException("Mã nhân viên " + employee.getEmployeeCode() + " đã tồn tại");
+        }
+
+        UserAccount existingUser = existingEmployee.getUser();
+        UserAccount updatedUser = employee.getUser();
+
+        updatedUser.setUserId(existingUser.getUserId());
+        updatedUser.setUsername(existingUser.getUsername());
+        updatedUser.setPassword(existingUser.getPassword());
+        updatedUser.setCreatedAt(existingUser.getCreatedAt());
+
+        if (updatedUser.getStatus() == null || updatedUser.getStatus().isEmpty()) {
+            updatedUser.setStatus(existingUser.getStatus());
+        }
+
+        UserAccount savedUser = userRepository.save(updatedUser);
+        employee.setUser(savedUser);
 
         return employeeRepository.save(employee);
+    }
+
+    @Override
+    public Page<Employee> searchEmployees(String keyword, String position, Pageable pageable) {
+        return employeeRepository.searchEmployees(keyword, position, pageable);
+    }
+
+    @Override
+    public List<String> getAllDistinctPositions() {
+        return employeeRepository.findAllDistinctPositions();
+    }
+
+    @Override
+    public Optional<Employee> findById(Long id) {
+        return employeeRepository.findById(id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Long id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy nhân viên"));
+
+        Long userId = employee.getUser().getUserId();
+        employeeRepository.deleteById(id);
+        userRepository.deleteById(userId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMultiple(List<Long> employeeIds) {
+        List<Employee> employees = employeeRepository.findAllById(employeeIds);
+        if (employees.isEmpty()) {
+            throw new IllegalArgumentException("Không tìm thấy nhân viên nào để xóa");
+        }
+
+        for (Employee employee : employees) {
+            Long userId = employee.getUser().getUserId();
+            employeeRepository.deleteById(employee.getEmployeeId());
+            userRepository.deleteById(userId);
+        }
+    }
+
+    @Override
+    public long countEmployees() {
+        return employeeRepository.count();
     }
 }
