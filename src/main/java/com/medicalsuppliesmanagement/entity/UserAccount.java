@@ -18,14 +18,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserAccount {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long userId;
-    
+
     @Column(name = "username")
     private String username;
-    
+
     @Column(name = "password")
     private String password;
 
@@ -37,7 +38,7 @@ public class UserAccount {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
-    private Gender gender; // Enum: Male, Female
+    private Gender gender;
 
     @Column(name = "address")
     private String address;
@@ -52,11 +53,11 @@ public class UserAccount {
     private String avatarUrl;
 
     @Column(name = "status")
-    private String status; // ENUM('active', 'inactive', 'banned')
+    private String status;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 20)
-    private Role role; // Enum: ADMIN, ACCOUNTANT, SALES, CUSTOMER
+    private Role role;
 
     @Column(name = "created_at")
     @CreationTimestamp

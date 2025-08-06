@@ -39,6 +39,6 @@ public class Customer {
     private String email;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "userId")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserAccount user;
 }

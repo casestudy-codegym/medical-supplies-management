@@ -13,32 +13,38 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Salary {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "salary_id")
     private Long salaryId;
 
-    private int month; // tháng lương
-    private int year; // năm lương
+    @Column(name = "month", nullable = false)
+    private int month; // Tháng lương
+
+    @Column(name = "year", nullable = false)
+    private int year; // Năm lương
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
     @Column(name = "base_salary")
-    private Double baseSalary;
+    private Double baseSalary; // Lương cơ bản
 
     @Column(name = "advance")
-    private Double advance; // tạm ứng lương
+    private Double advance; // Tạm ứng lương
 
     @Column(name = "salary_due")
-    private Double salaryDue; // = base_salary - advance
+    private Double salaryDue; // Lương thực nhận = base_salary - advance
 
-    private LocalDate payment_date; // ngày trả lương
+    @Column(name = "payment_date")
+    private LocalDate paymentDate; // Ngày trả lương
 
-    private PaymentStatus payment_status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status")
+    private PaymentStatus paymentStatus;
 
     @Column(name = "updated_at")
     @UpdateTimestamp
@@ -48,4 +54,3 @@ public class Salary {
         PENDING, PAID, CANCELLED
     }
 }
-

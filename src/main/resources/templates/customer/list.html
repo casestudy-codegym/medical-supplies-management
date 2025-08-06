@@ -151,7 +151,7 @@
                 border-radius: 8px;
                 margin-bottom: 1rem;
                 padding: 1rem;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             }
 
             .mobile-card-header {
@@ -274,7 +274,7 @@
                 <tr th:each="customer : ${customers}">
                     <td>
                         <input type="checkbox" name="selectedIds" th:value="${customer.customerId}"
-                               class="selectBox form-check-input"/>
+                               class="selectBox form-check-input" th:id="'desktop-' + ${customer.customerId}"/>
                     </td>
                     <td>
                         <span class="badge bg-light text-dark border" th:text="${customer.customerCode}"></span>
@@ -283,11 +283,9 @@
                         <div class="fw-semibold" th:text="${customer.name}"></div>
                     </td>
                     <td>
-                      <span class="badge"
-                            th:classappend="${customer.type.name() == 'WHOLESALE' ? 'bg-primary'
-                           : (customer.type.name() == 'SUPPLIER' ? 'bg-warning' : 'bg-info')}"
-                            th:text="${customer.typeVN}">
-                      </span>
+                        <span class="badge bg-primary" th:if="${customer.type.name() == 'WHOLESALE'}">Khách sỉ</span>
+                        <span class="badge bg-warning" th:if="${customer.type.name() == 'SUPPLIER'}">Nhà cung cấp</span>
+                        <span class="badge bg-info" th:if="${customer.type.name() == 'RETAIL'}">Khách lẻ</span>
                     </td>
                     <td class="d-md-table-cell" th:text="${customer.address}"></td>
                     <td class="d-md-table-cell">
@@ -328,14 +326,16 @@
             <div th:each="customer : ${customers}" class="mobile-card">
                 <div class="mobile-card-header">
                     <div>
-                        <input type="checkbox" name="selectedIds" th:value="${customer.customerId}"
-                               class="selectBox form-check-input me-2"/>
+                        <!-- Checkbox chỉ hiển thị trên mobile, không được submit -->
+                        <input type="checkbox" th:value="${customer.customerId}"
+                               class="selectBox form-check-input me-2" th:id="'mobile-' + ${customer.customerId}" data-mobile-only="true"/>
                         <span class="badge bg-light text-dark border" th:text="${customer.customerCode}"></span>
                     </div>
                     <span class="badge"
                           th:classappend="${customer.type.name() == 'WHOLESALE' ? 'bg-primary'
-                         : (customer.type.name() == 'SUPPLIER' ? 'bg-warning' : 'bg-info')}"
-                          th:text="${customer.typeVN}">
+                                 : (customer.type.name() == 'SUPPLIER' ? 'bg-warning' : 'bg-info')}"
+                          th:text="${customer.type.name() == 'WHOLESALE' ? 'Khách sỉ'
+                          : (customer.type.name() == 'SUPPLIER' ? 'Nhà cung cấp' : 'Khách lẻ')}">
                     </span>
                 </div>
                 <div class="mobile-card-body">
@@ -356,7 +356,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Mobile Empty State -->
         <div class="d-md-none text-center py-5" th:if="${#lists.isEmpty(customers)}">
             <div class="text-muted">
@@ -365,6 +364,9 @@
                 <small>Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</small>
             </div>
         </div>
+
+        <!-- Hidden inputs để submit - được tạo động bởi JavaScript -->
+        <div id="hiddenInputsContainer"></div>
     </form>
 
     <!-- Pagination -->
@@ -472,7 +474,7 @@
                     </div>
                     <h6 class="text-dark mb-2">Xác nhận xóa khách hàng</h6>
                     <p class="mb-3">Bạn đang chuẩn bị xóa <span class="badge bg-danger fs-6 px-3 py-2"
-                                                                id="selectedCount">0</span> khách hàng</p>
+                                                                id="selectedCount"></span> khách hàng</p>
                     <div class="alert alert-danger border-0 py-3" style="background-color: #f8d7da;">
                         <div class="d-flex align-items-center justify-content-center">
                             <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
@@ -498,7 +500,6 @@
         </div>
     </div>
 </div>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const deleteButtons = document.querySelectorAll('.delete-btn');
@@ -519,10 +520,59 @@
             });
         });
 
+        // Function to sync checkboxes between desktop and mobile views
+        function syncCheckboxes(sourceCheckbox) {
+            const customerId = sourceCheckbox.value;
+            const isChecked = sourceCheckbox.checked;
+
+            // Sync all checkboxes with the same customer ID
+            document.querySelectorAll(`.selectBox[value="${customerId}"]`).forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        }
+
+        // Add event listeners to all checkboxes for syncing
+        document.querySelectorAll('.selectBox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                syncCheckboxes(this);
+            });
+        });
+
+        // Function to get selected unique customer IDs
+        function getSelectedCustomerIds() {
+            const selectedIds = new Set();
+
+            // Chỉ lấy từ desktop checkboxes (có name="selectedIds")
+            document.querySelectorAll('input[name="selectedIds"]:checked').forEach(checkbox => {
+                selectedIds.add(checkbox.value);
+            });
+
+            return Array.from(selectedIds);
+        }
+
+        // Function to create hidden inputs for form submission
+        function createHiddenInputs(selectedIds) {
+            const container = document.getElementById('hiddenInputsContainer');
+            // Clear existing hidden inputs
+            container.innerHTML = '';
+
+            // Create hidden input for each selected ID
+            selectedIds.forEach(id => {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'selectedIds';
+                hiddenInput.value = id;
+                container.appendChild(hiddenInput);
+            });
+        }
+
         // Xử lý nút xóa nhiều
         document.getElementById('bulkDeleteBtn').addEventListener('click', function () {
-            const selectedCheckboxes = document.querySelectorAll('.selectBox:checked');
-            const selectedCount = selectedCheckboxes.length;
+            const selectedIds = getSelectedCustomerIds();
+            const selectedCount = selectedIds.length;
+
+            console.log('Selected customer IDs:', selectedIds);
+            console.log('Count:', selectedCount);
 
             document.getElementById('noSelectionMessage').style.display = 'none';
             document.getElementById('confirmMessage').style.display = 'none';
@@ -534,6 +584,9 @@
                 document.getElementById('selectedCount').textContent = selectedCount;
                 document.getElementById('confirmMessage').style.display = 'block';
                 document.getElementById('confirmBulkDelete').style.display = 'inline-block';
+
+                // Tạo hidden inputs cho form submission
+                createHiddenInputs(selectedIds);
             }
 
             bulkDeleteModal.show();
@@ -541,6 +594,11 @@
 
         // Xác nhận xóa nhiều
         document.getElementById('confirmBulkDelete').addEventListener('click', function () {
+            // Loại bỏ tất cả checkbox visible để tránh trùng lặp
+            document.querySelectorAll('input[name="selectedIds"]:not([type="hidden"])').forEach(checkbox => {
+                checkbox.removeAttribute('name');
+            });
+
             document.getElementById('bulkDeleteForm').submit();
         });
 
@@ -549,7 +607,12 @@
         if (selectAllDesktop) {
             selectAllDesktop.addEventListener('change', function () {
                 const checked = this.checked;
-                document.querySelectorAll('.selectBox').forEach(cb => cb.checked = checked);
+                console.log('Select All clicked, checked:', checked);
+
+                // Set all checkboxes
+                document.querySelectorAll('.selectBox').forEach(checkbox => {
+                    checkbox.checked = checked;
+                });
             });
         }
     });
