@@ -70,15 +70,6 @@ public class CustomerController {
         return "redirect:/management/customers";
     }
 
-    // 👤 Hiển thị trang hồ sơ khách hàng
-    @GetMapping("/profile")
-    public String showCustomerProfile(Model model, Principal principal) {
-        String username = principal.getName();
-        CustomerDto dto = customerService.getCustomerProfile(username);
-        model.addAttribute("customer", dto);
-        return "customer/profile";
-    }
-
     // ✏️ Hiển thị form chỉnh sửa hồ sơ khách hàng
     @GetMapping("/edit")
     public String showEditForm(Model model, Principal principal) {
