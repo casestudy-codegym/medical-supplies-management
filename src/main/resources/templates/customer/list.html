@@ -334,8 +334,8 @@
                     <span class="badge"
                           th:classappend="${customer.type.name() == 'WHOLESALE' ? 'bg-primary'
                                  : (customer.type.name() == 'SUPPLIER' ? 'bg-warning' : 'bg-info')}"
-                          th:text="${customer.type.name() == 'WHOLESALE' ? 'Bán sỉ'
-                          : (customer.type.name() == 'SUPPLIER' ? 'Nhà cung cấp' : 'Bán lẻ')}">
+                          th:text="${customer.type.name() == 'WHOLESALE' ? 'Khách sỉ'
+                          : (customer.type.name() == 'SUPPLIER' ? 'Nhà cung cấp' : 'Khách lẻ')}">
                     </span>
                 </div>
                 <div class="mobile-card-body">
