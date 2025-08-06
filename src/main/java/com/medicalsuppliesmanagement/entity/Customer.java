@@ -17,7 +17,8 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customerId;
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "customer_code", unique = true, length = 20)
     private String customerCode;
@@ -39,6 +40,6 @@ public class Customer {
     private String email;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "userId")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserAccount user;
 }

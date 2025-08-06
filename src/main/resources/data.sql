@@ -17,7 +17,7 @@ INSERT INTO employees (id, employee_code, position, user_id) VALUES
 (3, 'EMP003', 'Nhân viên bán hàng', 3);
 
 -- Dữ liệu mẫu cho bảng customers
-INSERT INTO customers (id, customer_code, name, type, address, phone, email, id) VALUES
+INSERT INTO customers (id, customer_code, name, type, address, phone, email, user_id) VALUES
 (1, 'CUS001', 'Khách hàng 1', 'RETAIL', 'Đà Nẵng', '0987654324', 'customer1@gmail.com', 4),
 (2, 'CUS002', 'Khách hàng 2', 'WHOLESALE', 'Hải Phòng', '0987654325', 'customer2@gmail.com', 5),
 (3, 'CUS003', 'Công ty ABC', 'WHOLESALE', 'Hà Nội', '0987654326', 'company@gmail.com', null),
@@ -102,6 +102,14 @@ INSERT INTO payment_settings (id, setting_name, setting_value, description, acti
 (1, 'VAT_PERCENT', '10', 'Phần trăm VAT mặc định', TRUE),
 (2, 'DISCOUNT_CUSTOMER_VIP', '15', 'Phần trăm giảm giá cho khách hàng VIP', TRUE),
 (3, 'DISCOUNT_WHOLESALE', '8', 'Phần trăm giảm giá cho đơn hàng bán buôn', TRUE);
+
+-- Dữ liệu mẫu cho bảng salaries
+-- Dữ liệu mẫu cho bảng salaries
+INSERT INTO salaries (advance, base_salary, month, payment_date, payment_status, salary_due, year, employee_id)
+VALUES
+    (1000000, 5000000, 7, '2025-07-31', 'PAID', 4000000, 2025, 1),
+    (500000, 4500000, 7, '2025-07-31', 'PAID', 4000000, 2025, 2),
+    (0, 4000000, 7, '2025-07-31', 'PENDING', 4000000, 2025, 3);
 
 -- Bật lại kiểm tra khóa ngoại
 SET FOREIGN_KEY_CHECKS = 1; 
