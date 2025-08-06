@@ -112,7 +112,7 @@
 
                 <!-- Thông tin cá nhân cho EMPLOYEE hoặc ADMIN -->
                 <li class="nav-item" sec:authorize="hasAnyRole('ACCOUNTANT','SALES','ADMIN')">
-                    <a th:href="@{/employee/profile}" class="nav-link">
+                    <a th:href="@{/employees/profile}" class="nav-link">
                         <span><i class="fas fa-user-circle"></i> Thông tin cá nhân</span>
                     </a>
                 </li>

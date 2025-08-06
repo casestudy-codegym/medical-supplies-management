@@ -11,13 +11,13 @@ INSERT INTO users (user_id, username, password, full_name, date_of_birth, gender
 (5, 'customer2', '$2a$12$yCj1Zn/GimQGoRRcNSyRVu9AmSrGZMftKRQlGuMnGFlAdm91BJaY2', 'Khách hàng 2', '1988-11-12', 'NU', 'Hải Phòng', '0987654325', 'customer2@gmail.com', '/images/avatar/customer2.png', 'ACTIVE', 'CUSTOMER');
 
 -- Dữ liệu mẫu cho bảng employees
-INSERT INTO employees (id, employee_code, position, user_id) VALUES
+INSERT INTO employees (employee_id, employee_code, position, user_id) VALUES
 (1, 'EMP001', 'Quản trị hệ thống', 1),
 (2, 'EMP002', 'Kế toán', 2),
 (3, 'EMP003', 'Nhân viên bán hàng', 3);
 
 -- Dữ liệu mẫu cho bảng customers
-INSERT INTO customers (id, customer_code, name, type, address, phone, email, user_id) VALUES
+INSERT INTO customers (customer_id, customer_code, name, type, address, phone, email, user_id) VALUES
 (1, 'CUS001', 'Khách hàng 1', 'RETAIL', 'Đà Nẵng', '0987654324', 'customer1@gmail.com', 4),
 (2, 'CUS002', 'Khách hàng 2', 'WHOLESALE', 'Hải Phòng', '0987654325', 'customer2@gmail.com', 5),
 (3, 'CUS003', 'Công ty ABC', 'WHOLESALE', 'Hà Nội', '0987654326', 'company@gmail.com', null),
