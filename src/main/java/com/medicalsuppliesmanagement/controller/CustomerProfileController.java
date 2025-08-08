@@ -1,5 +1,6 @@
 package com.medicalsuppliesmanagement.controller;
 
+import com.medicalsuppliesmanagement.dto.ChangePasswordDto;
 import com.medicalsuppliesmanagement.dto.CustomerDto;
 import com.medicalsuppliesmanagement.service.ICustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class CustomerProfileController {
         String username = principal.getName();
         CustomerDto dto = customerService.getCustomerProfile(username);
         model.addAttribute("customer", dto);
+
+        model.addAttribute("changePasswordDto", new ChangePasswordDto());
+
         return "customer/profile";
     }
 
