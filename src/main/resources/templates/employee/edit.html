@@ -9,8 +9,12 @@
         body {
             font-family: Arial, Helvetica, sans-serif;
             background-color: #f2f2f2;
-            padding: 30px;
             color: #293a58;
+            margin: 0; /* bỏ padding body để header full-width */
+        }
+
+        .page-shell {
+            padding: 24px 30px; /* tạo khoảng cách cho nội dung */
         }
 
         form {
@@ -18,9 +22,8 @@
             padding: 30px;
             border-radius: 15px;
             max-width: 900px;
-            margin: auto;
+            margin: 14px auto 50px auto; /* khoảng cách trên, dưới */
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 50px;
         }
 
         form h2 {
@@ -145,65 +148,70 @@
 </head>
 <body>
 
-<form th:action="@{/employees/edit}" th:object="${employee}" method="post">
-    <h2>Chỉnh sửa thông tin cá nhân</h2>
+<!-- Header -->
+<div th:replace="layout/header :: header"></div>
 
-    <div class="form-layout">
-        <!-- Avatar -->
-        <div class="avatar-wrapper" onclick="document.getElementById('avatarFileInput').click()">
-            <img id="avatarPreview" th:src="${employee.avatarUrl}" alt="Avatar"/>
-            <div class="change-text">Change Avatar</div>
-        </div>
+<div class="page-shell">
+    <form th:action="@{/employees/edit}" th:object="${employee}" method="post">
+        <h2>Chỉnh sửa thông tin cá nhân</h2>
 
-        <!-- Form -->
-        <div>
-            <div class="form-grid">
-                <div class="form-item">
-                    <label>Tên đăng nhập:</label>
-                    <input type="text" th:field="*{username}" readonly/>
-                </div>
-
-                <div class="form-item">
-                    <label>Họ tên:</label>
-                    <input type="text" th:field="*{fullName}" required/>
-                </div>
-
-                <div class="form-item">
-                    <label>Mã nhân viên:</label>
-                    <input type="text" th:field="*{employeeCode}" readonly/>
-                </div>
-
-                <div class="form-item">
-                    <label>Số điện thoại:</label>
-                    <input type="text" th:field="*{phone}"/>
-                </div>
-
-                <div class="form-item">
-                    <label>Email:</label>
-                    <input type="email" th:field="*{email}"/>
-                </div>
-
-                <div class="form-item">
-                    <label>Địa chỉ:</label>
-                    <input type="text" th:field="*{address}"/>
-                </div>
-
-                <div class="form-item">
-                    <label>Ngày sinh:</label>
-                    <input type="date" th:field="*{dateOfBirth}"/>
-                </div>
+        <div class="form-layout">
+            <!-- Avatar -->
+            <div class="avatar-wrapper" onclick="document.getElementById('avatarFileInput').click()">
+                <img id="avatarPreview" th:src="${employee.avatarUrl}" alt="Avatar"/>
+                <div class="change-text">Change Avatar</div>
             </div>
 
-            <input type="file" id="avatarFileInput" accept="image/*" style="display:none;"/>
-            <input type="hidden" id="avatarUrlInput" th:field="*{avatarUrl}"/>
+            <!-- Form -->
+            <div>
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label>Tên đăng nhập:</label>
+                        <input type="text" th:field="*{username}" readonly/>
+                    </div>
 
-            <div class="button-group">
-                <button type="submit" class="btn-submit">Cập nhật</button>
-                <a th:href="@{/employees/profile}" class="btn-back">Trở về</a>
+                    <div class="form-item">
+                        <label>Họ tên:</label>
+                        <input type="text" th:field="*{fullName}" required/>
+                    </div>
+
+                    <div class="form-item">
+                        <label>Mã nhân viên:</label>
+                        <input type="text" th:field="*{employeeCode}" readonly/>
+                    </div>
+
+                    <div class="form-item">
+                        <label>Số điện thoại:</label>
+                        <input type="text" th:field="*{phone}"/>
+                    </div>
+
+                    <div class="form-item">
+                        <label>Email:</label>
+                        <input type="email" th:field="*{email}"/>
+                    </div>
+
+                    <div class="form-item">
+                        <label>Địa chỉ:</label>
+                        <input type="text" th:field="*{address}"/>
+                    </div>
+
+                    <div class="form-item">
+                        <label>Ngày sinh:</label>
+                        <input type="date" th:field="*{dateOfBirth}"/>
+                    </div>
+                </div>
+
+                <input type="file" id="avatarFileInput" accept="image/*" style="display:none;"/>
+                <input type="hidden" id="avatarUrlInput" th:field="*{avatarUrl}"/>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-submit">Cập nhật</button>
+                    <a th:href="@{/employees/profile}" class="btn-back">Trở về</a>
+                </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
 
 <!-- Footer -->
 <div th:replace="layout/footer :: footer"></div>
