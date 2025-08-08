@@ -71,6 +71,8 @@
                                                 th:class="${categoryWord != null and categoryWord.id == category.id ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'}">
                                             <i class="fas fa-medical-kit"></i>
                                             <span th:text="${category.name}">Thiết bị bảo hộ y tế</span>
+                                            <span class="badge bg-secondary ms-2"
+                                                  th:text="${materialCounts[category.id] != null ? materialCounts[category.id] : 0}"></span>
                                         </button>
                                     </th:block>
                                 </div>

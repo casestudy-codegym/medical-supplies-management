@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -55,6 +56,8 @@ public class MaterialDetailController {
                        @RequestParam(required = false) Double maxPrice) {
         try {
             List<Category> categories = categoryService.findAll();
+            Map<Long, Long> materialCounts = materialService.getMaterialCountByCategory();
+            model.addAttribute("materialCounts", materialCounts);
             model.addAttribute("categories", categories);
             model.addAttribute("searchQuery", search);
             model.addAttribute("minPrice", minPrice);
