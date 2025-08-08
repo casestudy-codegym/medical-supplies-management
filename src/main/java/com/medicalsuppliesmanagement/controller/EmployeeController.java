@@ -1,5 +1,6 @@
 package com.medicalsuppliesmanagement.controller;
 
+import com.medicalsuppliesmanagement.dto.ChangePasswordDto;
 import com.medicalsuppliesmanagement.entity.Employee;
 import com.medicalsuppliesmanagement.dto.EmployeeDto;
 import com.medicalsuppliesmanagement.entity.UserAccount;
@@ -78,10 +79,19 @@ public class EmployeeController {
     }
 
     @GetMapping("/profile")
-    public String showEmployeeProfile(Model model, Principal principal) {
+    public String showEmployeeProfile(Model model,
+                                      Principal principal,
+                                      @RequestParam(value = "passwordChanged", required = false) Boolean passwordChanged) {
         String username = principal.getName();
         EmployeeDto dto = employeeService.getEmployeeProfile(username);
         model.addAttribute("employee", dto);
+
+        model.addAttribute("changePasswordDto", new ChangePasswordDto());
+
+        if (Boolean.TRUE.equals(passwordChanged)) {
+            model.addAttribute("passwordChanged", true);
+        }
+
         return "employee/profile";
     }
 

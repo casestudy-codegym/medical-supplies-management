@@ -9,6 +9,7 @@
 </head>
 
 <body>
+<!-- Header -->
 <div sec:authorize="hasRole('CUSTOMER')" th:replace="~{layout/userHeader :: header}"></div>
 <div sec:authorize="!hasRole('CUSTOMER')" th:replace="~{layout/header :: header}"></div>
 
@@ -53,9 +54,26 @@
     <div class="cus-actions">
         <button onclick="window.history.back()">Quay về</button>
         <button onclick="window.location.href='/customer/edit'">Cập nhật thông tin</button>
-        <button onclick="window.location.href='/auth/change-password'">Thay đổi mật khẩu</button>
+        <!-- Mở modal thay đổi mật khẩu -->
+        <button type="button" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+            Thay đổi mật khẩu
+        </button>
     </div>
 </div>
-</body>
+
+<!-- Modal đổi mật khẩu -->
+<div th:replace="~{auth/changePassword :: changePasswordModal}"></div>
+
+<!-- Footer -->
+<div th:replace="layout/footer :: footer"></div>
+
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    window.passwordChangedFlag = /*[[${passwordChanged}]]*/ false;
+</script>
+<script th:src="@{/js/changePasswordConfirm.js}"></script>
+
+</body>
 </html>
