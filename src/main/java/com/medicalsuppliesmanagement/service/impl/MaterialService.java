@@ -7,7 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -45,4 +47,14 @@ public class MaterialService {
     public void deleteById(Long id) {
         materialRepository.deleteById(id);
     }
+
+    public Map<Long, Long> getMaterialCountByCategory() {
+        List<Object[]> results = materialRepository.countMaterialsByCategory();
+        Map<Long, Long> counts = new HashMap<>();
+        for (Object[] row : results) {
+            counts.put((Long) row[0], (Long) row[1]);
+        }
+        return counts;
+    }
+
 }
