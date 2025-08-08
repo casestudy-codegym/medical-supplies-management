@@ -61,7 +61,7 @@
 
 <div class="container">
     <div class="card p-4">
-        <form th:action="@{/management/edit/{id}(id=${customer.customerId})}" th:object="${customer}" method="post" class="needs-validation" novalidate>
+        <form th:action="@{/management/customers/edit/{id}(id=${customer.customerId})}" th:object="${customer}" method="post" class="needs-validation" novalidate>
             <input type="hidden" th:field="*{customerId}"/>
 
             <div class="mb-3">

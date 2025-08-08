@@ -14,7 +14,8 @@ body {
     padding: 20px;
 }
 
-.glass-card {
+
+.content-wrapper .glass-card {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
@@ -23,20 +24,20 @@ body {
     color: #ffffff;
 }
 
-.sidebar .card-header {
+.content-wrapper .sidebar .card-header {
     background-color: transparent;
     font-weight: bold;
     color: #ffffff;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.content-header h2 {
+.content-wrapper.content-header h2 {
     color: #ffffff;
     font-weight: 700;
     margin-bottom: 0.5rem;
 }
 
-.content-header p {
+.content-wrapper .content-header p {
     color: #dfe6f1;
 }
 

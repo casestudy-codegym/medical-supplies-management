@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface IMaterialRepository extends JpaRepository<Material, Long> {
 
     Page<Material> findByCategoryId(Long categoryId, Pageable pageable);
@@ -24,4 +26,8 @@ public interface IMaterialRepository extends JpaRepository<Material, Long> {
                                    @Param("minPrice") Double minPrice,
                                    @Param("maxPrice") Double maxPrice,
                                    Pageable pageable);
+
+    @Query("SELECT c.id, COUNT(m) FROM Material m RIGHT JOIN m.category c GROUP BY c.id")
+    List<Object[]> countMaterialsByCategory();
+
 }

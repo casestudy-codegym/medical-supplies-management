@@ -20,11 +20,13 @@
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
+    min-height: 60px;
 }
 
 .navbar-brand {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .logo {
@@ -39,7 +41,6 @@
     margin-right: 10px;
 }
 
-/* Mobile menu toggle */
 .mobile-menu-toggle {
     display: none;
     background: none;
@@ -62,6 +63,8 @@
     margin: 0;
     padding: 0;
     align-items: center;
+    flex-grow: 1;
+    justify-content: center;
 }
 
 .nav-item {
@@ -169,11 +172,22 @@
     color: #999;
 }
 
-.user-info {
+.user-info,
+.desktop-user-info {
     display: flex;
     align-items: center;
     color: white;
     white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.desktop-user-info {
+    display: flex !important;
+}
+
+.mobile-user-info {
+    display: none;
 }
 
 .user-avatar {
@@ -186,12 +200,20 @@
     justify-content: center;
     margin-right: 10px;
     border: 2px solid rgba(255,255,255,0.3);
+    flex-shrink: 0;
 }
 
-/* Login button styles */
-.login-button {
+
+.login-button,
+.desktop-login {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.desktop-login {
+    display: flex !important;
 }
 
 .btn-login {
@@ -227,10 +249,23 @@
     transform: translateY(-2px);
 }
 
+
+.navbar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    align-items: center;
+}
+
+.nav-menu {
+    justify-content: flex-start;
+}
+
 /* Mobile Styles */
 @media (max-width: 1024px) {
     .navbar {
         padding: 0 15px;
+        grid-template-columns: auto 1fr auto;
     }
 
     .nav-link {
@@ -249,6 +284,7 @@
     }
 
     .navbar {
+        display: flex;
         flex-wrap: wrap;
         padding: 10px 15px;
     }
@@ -326,7 +362,7 @@
         padding-left: 45px;
     }
 
-    /* Mobile submenu */
+
     .dropdown-submenu .dropdown-sub {
         position: static;
         width: 100%;
@@ -352,7 +388,7 @@
         padding-left: 65px;
     }
 
-    /* Mobile menu indicators */
+
     .nav-link::after {
         content: '\f107';
         font-family: 'Font Awesome 6 Free';
@@ -369,7 +405,18 @@
         display: none;
     }
 
-    .user-info {
+    /* Mobile user info */
+    .desktop-user-info,
+    .desktop-login {
+        display: none !important;
+    }
+
+    .mobile-user-info {
+        display: block;
+        width: 100%;
+    }
+
+    .mobile-user-info .user-info {
         margin-top: 10px;
         padding: 10px 20px;
         border-top: 1px solid rgba(255,255,255,0.1);

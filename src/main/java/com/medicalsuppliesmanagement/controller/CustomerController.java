@@ -79,7 +79,6 @@ public class CustomerController {
             redirectAttributes.addFlashAttribute("error", "Không tìm thấy khách hàng!");
             return "redirect:/management/customers";
         }
-
         model.addAttribute("customer", customer);
         model.addAttribute("action", "Chỉnh sửa khách hàng");
         return "customer/update";

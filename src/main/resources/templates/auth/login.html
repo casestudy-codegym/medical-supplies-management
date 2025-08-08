@@ -10,7 +10,7 @@
             --secondary-color: #3a4f7a;
             --accent-color: #f0f2f5;
         }
-        
+
         body {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             min-height: 100vh;
@@ -28,7 +28,7 @@
             right: 0;
             bottom: 0;
             background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%),
-                        radial-gradient(circle at 70% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            radial-gradient(circle at 70% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
             pointer-events: none;
         }
 
@@ -191,7 +191,8 @@
                         Tên đăng nhập hoặc mật khẩu không đúng!
                     </div>
                     <!-- Thông báo đăng xuất thành công -->
-                    <div th:if="${param.logout} and (${param.msg} == null or param.msg[0] != 'passwordChanged')" class="alert alert-success">
+                    <div th:if="${param.logout} and (${param.msg} == null or param.msg[0] != 'passwordChanged')"
+                         class="alert alert-success">
                         Bạn đã đăng xuất thành công!
                     </div>
                     <!-- Thông báo khác -->
@@ -202,11 +203,13 @@
                     <form th:action="@{/auth/login-process}" method="post">
                         <div class="mb-4">
                             <label for="username" class="form-label">Tên đăng nhập</label>
-                            <input type="text" class="form-control" id="username" name="username" maxlength="40" required>
+                            <input type="text" class="form-control" id="username" name="username" maxlength="40"
+                                   required>
                         </div>
                         <div class="mb-4">
                             <label for="password" class="form-label">Mật khẩu</label>
-                            <input type="password" class="form-control" id="password" name="password" maxlength="40" required>
+                            <input type="password" class="form-control" id="password" name="password" maxlength="40"
+                                   required>
                         </div>
                         <div class="mb-4 form-check">
                             <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
@@ -217,7 +220,7 @@
                             <a href="/" class="btn btn-secondary">Thoát</a>
                         </div>
                     </form>
-                    
+
                     <div class="text-center mb-4">
                         <p class="mb-3">Hoặc đăng nhập với</p>
                         <div class="social-login">
