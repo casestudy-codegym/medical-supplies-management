@@ -133,7 +133,7 @@
                                         </div>
 
                                         <div class="product-code" th:text="${material.materialCode != null ? material.materialCode : 'N/A'}">MAT-001</div>
-                                        <h6 class="product-title" th:text="${material.name != null ? material.name +'(' + material.quantity + ')'  : 'Unknown Material'}">Material Name</h6>
+                                        <h6 class="product-title" th:text="${material.name != null ? material.name : 'Unknown Material'}">Material Name</h6>
                                         <p class="product-category" th:text="${material.category != null and material.category.name != null ? material.category.name : 'No Category'}">Category Name</p>
                                         <p class="product-description" th:text="${material.description != null ? material.description : 'No description available'}">Material Description</p>
 
