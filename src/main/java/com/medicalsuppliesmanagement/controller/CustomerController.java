@@ -72,7 +72,7 @@ public class CustomerController {
     }
 
     // ✏️ Hiển thị form chỉnh sửa hồ sơ khách hàng
-    @GetMapping("/edit/{id}")
+    @GetMapping("/customers/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         Customer customer = customerService.findById(id);
         if (customer == null) {
@@ -87,7 +87,7 @@ public class CustomerController {
 
 
     // 💾 Cập nhật thông tin hồ sơ khách hàng
-    @PostMapping("/edit/{id}")
+    @PostMapping("/customers/edit/{id}")
     public String updateCustomer(@PathVariable Long id, @Valid @ModelAttribute Customer customer,
                                  BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
