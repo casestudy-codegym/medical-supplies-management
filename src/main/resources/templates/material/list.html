@@ -194,7 +194,7 @@
                     <nav th:if="${materialList != null and materialList.hasContent()}" aria-label="Page navigation" class="mt-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <span th:if="${materialList.hasPrevious()}">
-                                <a th:href="@{/material/(page=${materialList.number - 1}, category=${categoryWord != null ? categoryWord.id : ''}, search=${searchQuery != null ? searchQuery : ''}, minPrice=${minPrice != null ? minPrice : ''}, maxPrice=${maxPrice != null ? maxPrice : ''})}"
+                                <a th:href="@{/material(page=${materialList.number - 1}, category=${categoryWord != null ? categoryWord.id : ''}, search=${searchQuery != null ? searchQuery : ''}, minPrice=${minPrice != null ? minPrice : ''}, maxPrice=${maxPrice != null ? maxPrice : ''})}"
                                    class="btn btn-outline-primary">
                                     <i class="fas fa-chevron-left me-1"></i>Trước
                                 </a>
@@ -206,7 +206,7 @@
                             </span>
 
                             <span th:if="${materialList.hasNext()}">
-                                <a th:href="@{/material/(page=${materialList.number + 1}, category=${categoryWord != null ? categoryWord.id : ''}, search=${searchQuery != null ? searchQuery : ''}, minPrice=${minPrice != null ? minPrice : ''}, maxPrice=${maxPrice != null ? maxPrice : ''})}"
+                                <a th:href="@{/material(page=${materialList.number + 1}, category=${categoryWord != null ? categoryWord.id : ''}, search=${searchQuery != null ? searchQuery : ''}, minPrice=${minPrice != null ? minPrice : ''}, maxPrice=${maxPrice != null ? maxPrice : ''})}"
                                    class="btn btn-outline-primary">
                                     Tiếp<i class="fas fa-chevron-right ms-1"></i>
                                 </a>

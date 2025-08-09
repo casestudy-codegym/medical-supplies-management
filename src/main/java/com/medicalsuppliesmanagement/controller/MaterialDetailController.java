@@ -64,7 +64,7 @@ public class MaterialDetailController {
             model.addAttribute("maxPrice", maxPrice);
 
             Page<Material> materialList = materialService.findWithFilters(
-                    categoryId, search, minPrice, maxPrice, PageRequest.of(page, 8)
+                    categoryId, search, minPrice, maxPrice, PageRequest.of(page, 1)
             );
             model.addAttribute("materialList", materialList);
 
